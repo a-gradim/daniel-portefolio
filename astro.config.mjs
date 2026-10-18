@@ -9,7 +9,18 @@ import keystatic from '@keystatic/astro';
 export default defineConfig({
   site: 'https://danielneto.vercel.app',
   adapter: vercel({ imageService: false }),
-  integrations: [react(), markdoc(), keystatic(), sitemap()],
+  integrations: [
+    react(),
+    markdoc(),
+    keystatic(),
+    sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: { en: 'en', pt: 'pt-PT' },
+      },
+      filter: (page) => !new URL(page).pathname.startsWith('/keystatic'),
+    }),
+  ],
   i18n: {
     locales: ['en', 'pt'],
     defaultLocale: 'en',
