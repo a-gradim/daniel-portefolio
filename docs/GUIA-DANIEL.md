@@ -57,6 +57,20 @@ Se uma imagem for maior, reduz as dimensões antes de a carregar.
 
 ---
 
+## 3b. Ordem das imagens (as linhas no canvas)
+
+Na home, ao clicar num projeto, o canvas liga as imagens por linhas pela ordem da história. Há três formas de definir essa ordem:
+
+1. **Nome do ficheiro.** Começa o nome com o número da posição: `1_nome.jpg`, `2_nome.jpg`, `3_nome.jpg`.
+2. **Imagens em paralelo.** Usa a mesma posição com uma letra: `3a_nome.jpg` e `3b_nome.jpg`. Ficam no mesmo nível, lado a lado, como ramos que depois voltam a juntar-se na posição seguinte.
+3. **Campo Position (no admin).** Em cada imagem ou vídeo da galeria, escreve a posição (por exemplo `4` ou `3a`). Este campo **tem prioridade** sobre o nome do ficheiro.
+
+Se não usares nenhuma das duas, vale a ordem da galeria, tal como está no admin.
+
+Os números (`1`, `2`, `3a`...) aparecem junto a cada imagem quando o projeto está selecionado.
+
+---
+
 ## 4. Tema por defeito
 
 1. No Keystatic, vai a **Site → Site settings**.

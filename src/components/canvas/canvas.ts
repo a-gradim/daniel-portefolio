@@ -1,104 +1,163 @@
-// Infinite wrapping drag/zoom canvas. cam.x/y = world coords of the viewport's top-left; cam.s = scale.
-const MIN = 0.5, MAX = 2, TAP = 6, TAU = 350;
-const LEVELS = [1, 0.7, 0.5];
+// Finite scatter canvas. cam.x/y = world coords of the viewport's top-left; cam.s = scale.
+const MIN_ABS = 0.1, MAX = 2.5, TAP = 6, TAU = 350, HEAD = 64, RESIST = 0.3, PANEL_GAP = 32;
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
-const mod = (a: number, n: number) => ((a % n) + n) % n;
 
-interface Slot { el: HTMLElement; bx: number; by: number; w: number; h: number; a: number; b: number; kx?: number; ky?: number }
+interface Tile {
+  el: HTMLElement; a: HTMLAnchorElement; img: HTMLImageElement;
+  p: string; i: number; rank: number; kind: string;
+  x: number; y: number; w: number; h: number; sz: number;
+}
+interface Proj { id: string; tiles: Tile[]; edges: [number, number][]; tpl: HTMLTemplateElement }
+interface Cam { cx: number; cy: number; s: number }
+type Side = 'left' | 'right';
 
 export function initCanvas(root: HTMLElement): () => void {
-  const view = root.querySelector<HTMLElement>('.cv-view')!;
-  const layer = root.querySelector<HTMLElement>('.cv-layer')!;
-  const cap = root.querySelector<HTMLElement>('.cv-caption')!;
-  const capT = cap.querySelector<HTMLElement>('.cv-ct')!;
-  const capD = cap.querySelector<HTMLElement>('.cv-cd')!;
-  const label = root.querySelector<HTMLElement>('[data-zoom-label]')!;
+  const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+  const view = $('.cv-view'), layer = $('.cv-layer'), cap = $('.cv-caption');
+  const capT = cap.querySelector<HTMLElement>('.cv-ct')!, capD = cap.querySelector<HTMLElement>('.cv-cd')!;
+  const label = $('[data-zoom-label]');
+  const edgesSvg = root.querySelector<SVGSVGElement>('.cv-edges')!;
+  const panel = $('[data-panel-el]'), panelBody = $('[data-panel-content]');
+  const lbEl = $('.cv-lb'), lbStage = $('[data-lb-stage]'), lbN = $('[data-lb-n]'), lbT = $('[data-lb-t]');
   const W = +root.dataset.w!, H = +root.dataset.h!;
   const reduceMq = matchMedia('(prefers-reduced-motion: reduce)');
+  const sheetMq = matchMedia('(max-width: 767px)');
+  const reduce = () => reduceMq.matches;
   const ac = new AbortController();
   const on = (t: EventTarget, type: string, fn: (e: any) => void, opts: AddEventListenerOptions = {}) =>
     t.addEventListener(type, fn, { ...opts, signal: ac.signal });
 
-  const originals = [...layer.querySelectorAll<HTMLElement>(':scope > .tile')];
-  const maxW = Math.max(...originals.map((t) => +t.dataset.w!), 0);
-  const maxH = Math.max(...originals.map((t) => +t.dataset.h!), 0);
-  const slots: Slot[] = [];
-  const seen = new Set<string>();
-  let vw = view.clientWidth || innerWidth, vh = view.clientHeight || innerHeight;
-  let builtX = 0, builtY = 0;
-
-  const cam = { x: 0, y: 0, s: vw < 640 ? 0.7 : 1 };
-  cam.x = (W - vw / cam.s) / 2;
-  cam.y = (H - vh / cam.s) / 2;
-
-  /** Make sure enough copies of the pattern exist to cover the viewport at scale >= level. */
-  function build(level: number) {
-    const nx = Math.ceil((vw / level + maxW) / W) + 1;
-    const ny = Math.ceil((vh / level + maxH) / H) + 1;
-    if (nx <= builtX && ny <= builtY) return;
-    for (let b = 0; b < ny; b++)
-      for (let a = 0; a < nx; a++)
-        originals.forEach((o, i) => {
-          const key = `${i}:${a}:${b}`;
-          if (seen.has(key)) return;
-          seen.add(key);
-          let el = o;
-          if (a || b) {
-            el = o.cloneNode(true) as HTMLElement;
-            el.setAttribute('aria-hidden', 'true');
-            el.querySelector('a')!.tabIndex = -1;
-            layer.appendChild(el);
-          }
-          slots.push({ el, bx: +o.dataset.x!, by: +o.dataset.y!, w: +o.dataset.w!, h: +o.dataset.h!, a, b });
-        });
-    builtX = Math.max(nx, builtX);
-    builtY = Math.max(ny, builtY);
+  /* ---------- data ---------- */
+  const tiles: Tile[] = [...layer.querySelectorAll<HTMLElement>('.tile')].map((el) => {
+    const d = el.dataset;
+    const a = el.querySelector('a')!;
+    const img = a.querySelector('img')!;
+    return {
+      el, a, img, p: d.p!, i: +d.i!, rank: +d.rank!, kind: d.kind!,
+      x: +d.x!, y: +d.y!, w: +d.w!, h: +d.h!, sz: Math.round(+d.w! * 0.4),
+    };
+  });
+  const tileOf = new Map<Element, Tile>(tiles.map((t) => [t.a, t]));
+  const projects = new Map<string, Proj>();
+  for (const t of tiles) {
+    if (!projects.has(t.p)) projects.set(t.p, { id: t.p, tiles: [], edges: [], tpl: null as any });
+    projects.get(t.p)!.tiles[t.i] = t;
   }
-  const levelFor = (s: number) => LEVELS.find((l) => l <= s) ?? MIN;
-  let level = levelFor(cam.s);
-  build(level);
+  root.querySelectorAll<HTMLTemplateElement>('template[data-panel]').forEach((tpl) => {
+    const pr = projects.get(tpl.dataset.panel!);
+    if (!pr) return;
+    pr.tpl = tpl;
+    try { pr.edges = JSON.parse(tpl.dataset.edges || '[]'); } catch {}
+  });
 
-  /* ---------- render ---------- */
-  let raf = 0, last = 0;
+  let vw = view.clientWidth || innerWidth, vh = view.clientHeight || innerHeight;
+  const cam = { x: 0, y: 0, s: 1 };
+  const center = () => ({ x: cam.x + vw / (2 * cam.s), y: cam.y + vh / (2 * cam.s) });
+  const setCam = (c: Cam) => { cam.s = c.s; cam.x = c.cx - vw / (2 * c.s); cam.y = c.cy - vh / (2 * c.s); };
+
+  /** Camera that fits box `b` inside the viewport minus insets, centred in what is left. */
+  function camFor(b: { x: number; y: number; w: number; h: number }, ins: { l: number; r: number; t: number; b: number }, cap: number): Cam {
+    const aw = Math.max(80, vw - ins.l - ins.r), ah = Math.max(80, vh - ins.t - ins.b);
+    const s = clamp(Math.min(aw / b.w, ah / b.h), minScale(), cap);
+    const sx = ins.l + aw / 2, sy = ins.t + ah / 2;
+    return { cx: b.x + b.w / 2 - (sx - vw / 2) / s, cy: b.y + b.h / 2 - (sy - vh / 2) / s, s };
+  }
+  const fitAllIns = () => ({ l: 16, r: 16, t: HEAD, b: 24 });
+  const fitAllScale = () => Math.min((vw - 32) / W, (vh - HEAD - 24) / H);
+  const minScale = () => Math.min(MIN_ABS, fitAllScale() * 0.9);
+  const fitAllCam = () => camFor({ x: 0, y: 0, w: W, h: H }, fitAllIns(), MAX);
+  const rectAt = (t: Tile, c: Cam) => {
+    const x0 = c.cx - vw / (2 * c.s), y0 = c.cy - vh / (2 * c.s);
+    return { x: (t.x - x0) * c.s, y: (t.y - y0) * c.s, w: t.w * c.s, h: t.h * c.s };
+  };
+
+  // Initial view: centred, roughly a third of the field visible.
+  {
+    const s = clamp(Math.sqrt((vw * vh * 3) / (W * H)), vw < 640 ? 0.3 : 0.2, 1);
+    setCam({ cx: W / 2, cy: H / 2, s });
+  }
+
+  /* ---------- render loop ---------- */
+  let raf = 0, last = 0, settleTimer = 0;
   let vx = 0, vy = 0; // inertia px/ms
-  let tween: { t0: number; s0: number; s1: number; ax: number; ay: number; px: number; py: number } | null = null;
+  let tw: { t0: number; dur: number; c0: Cam; c1: Cam } | null = null;
   let dragging = false;
+  let pw = 320, ph = 400; // cached panel size
+
+  function placePanel() {
+    if (!sel || sheetMq.matches) return;
+    const t = sel.tile;
+    const sx = (t.x - cam.x) * cam.s, sy = (t.y - cam.y) * cam.s, sw = t.w * cam.s, sh = t.h * cam.s;
+    const x = sel.side === 'right' ? sx + sw : sx - pw;
+    const y = Math.max(HEAD + 8, Math.min(sy, vh - ph - 56));
+    panel.style.setProperty('--px', x.toFixed(1) + 'px');
+    panel.style.setProperty('--py', y.toFixed(1) + 'px');
+    panel.classList.toggle('is-away', sx + sw < 0 || sx > vw || sy + sh < 0 || sy > vh);
+  }
+
+  function hardClamp() {
+    const c = center();
+    cam.x += clamp(c.x, 0, W) - c.x;
+    cam.y += clamp(c.y, 0, H) - c.y;
+  }
 
   function render() {
-    cam.x = mod(cam.x, W);
-    cam.y = mod(cam.y, H);
+    if (reduce()) hardClamp();
     layer.style.transform = `translate3d(${-cam.x * cam.s}px,${-cam.y * cam.s}px,0) scale(${cam.s})`;
-    const x1 = cam.x, y1 = cam.y;
-    for (const sl of slots) {
-      const kx = Math.ceil((x1 - sl.w - sl.bx) / W) + sl.a;
-      const ky = Math.ceil((y1 - sl.h - sl.by) / H) + sl.b;
-      if (kx !== sl.kx || ky !== sl.ky) {
-        sl.kx = kx; sl.ky = ky;
-        sl.el.style.transform = `translate3d(${kx * W}px,${ky * H}px,0)`;
+    layer.style.setProperty('--inv', (1 / cam.s).toFixed(4));
+    label.textContent = Math.round(cam.s * 100) + '%';
+    placePanel();
+    root.classList.add('is-moving');
+    clearTimeout(settleTimer);
+    settleTimer = window.setTimeout(settle, 180);
+  }
+
+  /** After the camera stops: let the browser re-raster and pick sharper srcset candidates. */
+  function settle() {
+    root.classList.remove('is-moving');
+    const x1 = cam.x + vw / cam.s, y1 = cam.y + vh / cam.s;
+    for (const t of tiles) {
+      if (t.x > x1 || t.x + t.w < cam.x || t.y > y1 || t.y + t.h < cam.y) continue;
+      const px = Math.ceil(t.w * cam.s);
+      if (Math.abs(px - t.sz) > t.sz * 0.08) {
+        t.sz = px;
+        t.img.sizes = px + 'px';
       }
     }
-    label.textContent = Math.round(cam.s * 100) + '%';
   }
+
+  const ease = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 
   function frame(t: number) {
     raf = 0;
     const dt = Math.min(48, t - last);
     last = t;
     let active = false;
-    if (tween) {
-      const p = clamp((t - tween.t0) / 220, 0, 1);
-      const e = 1 - Math.pow(1 - p, 3);
-      cam.s = tween.s0 + (tween.s1 - tween.s0) * e;
-      cam.x = tween.ax - tween.px / cam.s;
-      cam.y = tween.ay - tween.py / cam.s;
-      if (p < 1) active = true; else tween = null;
-      ensureCoverage();
+    if (tw) {
+      const p = clamp((t - tw.t0) / tw.dur, 0, 1);
+      const e = ease(p);
+      const ls = Math.log(tw.c0.s) + (Math.log(tw.c1.s) - Math.log(tw.c0.s)) * e;
+      setCam({
+        cx: tw.c0.cx + (tw.c1.cx - tw.c0.cx) * e,
+        cy: tw.c0.cy + (tw.c1.cy - tw.c0.cy) * e,
+        s: Math.exp(ls),
+      });
+      if (p < 1) active = true; else tw = null;
     }
-    if (!dragging && (vx || vy)) {
+    if (!dragging && !tw && (vx || vy)) {
       pan(vx * dt, vy * dt);
       const d = Math.exp(-dt / TAU);
       vx *= d; vy *= d;
       if (Math.hypot(vx, vy) < 0.02) vx = vy = 0; else active = true;
+    }
+    if (!dragging && !tw) { // soft clamp: the field centre can't leave the field; ease back when overshooting
+      const c = center();
+      const ox = clamp(c.x, 0, W) - c.x, oy = clamp(c.y, 0, H) - c.y;
+      if (ox || oy) {
+        const k = 1 - Math.exp(-dt / 140);
+        cam.x += ox * k; cam.y += oy * k;
+        if (Math.hypot(ox, oy) * cam.s > 0.5) active = true; else { cam.x += ox; cam.y += oy; }
+      }
     }
     render();
     if (active) raf = requestAnimationFrame(frame);
@@ -108,33 +167,43 @@ export function initCanvas(root: HTMLElement): () => void {
   };
 
   /* ---------- camera ops ---------- */
-  const pan = (dx: number, dy: number) => { cam.x -= dx / cam.s; cam.y -= dy / cam.s; };
-  function ensureCoverage() {
-    const l = levelFor(cam.s);
-    if (l < level) { level = l; build(l); }
+  function pan(dx: number, dy: number) {
+    let wx = -dx / cam.s, wy = -dy / cam.s;
+    const c = center();
+    if (!reduce()) { // resistance when pushing past the field edge
+      if ((c.x < 0 && wx < 0) || (c.x > W && wx > 0)) wx *= RESIST;
+      if ((c.y < 0 && wy < 0) || (c.y > H && wy > 0)) wy *= RESIST;
+    }
+    cam.x += wx; cam.y += wy;
   }
   function zoomAt(f: number, px: number, py: number) {
-    const s2 = clamp(cam.s * f, MIN, MAX);
+    const s2 = clamp(cam.s * f, minScale(), MAX);
     const wx = cam.x + px / cam.s, wy = cam.y + py / cam.s;
     cam.s = s2;
     cam.x = wx - px / s2;
     cam.y = wy - py / s2;
-    ensureCoverage();
     kick();
   }
-  function zoomTo(target: number, px: number, py: number) {
-    target = clamp(target, MIN, MAX);
-    if (reduceMq.matches) return zoomAt(target / cam.s, px, py);
-    const s0 = cam.s;
-    tween = { t0: performance.now(), s0, s1: target, ax: cam.x + px / s0, ay: cam.y + py / s0, px, py };
+  function flyTo(c: Cam, dur = 750) {
+    c = { ...c, s: clamp(c.s, minScale(), MAX) };
+    vx = vy = 0;
+    if (reduce() || dur <= 0) { tw = null; setCam(c); render(); return; }
+    const ct = center();
+    tw = { t0: performance.now(), dur, c0: { cx: ct.x, cy: ct.y, s: cam.s }, c1: c };
     kick();
   }
+  const zoomStep = (f: number) => {
+    const base = tw?.c1 ?? { cx: center().x, cy: center().y, s: cam.s };
+    flyTo({ ...base, s: base.s * f }, 260);
+  };
+  const fitAll = () => flyTo(fitAllCam(), 800);
+
   const rel = (e: { clientX: number; clientY: number }) => {
     const r = view.getBoundingClientRect();
     return { x: e.clientX - r.left, y: e.clientY - r.top };
   };
   const touched = () => root.classList.add('is-touched');
-  const stopMotion = () => { vx = vy = 0; tween = null; };
+  const stopMotion = () => { vx = vy = 0; tw = null; };
 
   /* ---------- pointer: pan, pinch, tap ---------- */
   const ptrs = new Map<number, { x: number; y: number }>();
@@ -204,20 +273,29 @@ export function initCanvas(root: HTMLElement): () => void {
     dragging = false;
     root.classList.remove('is-dragging');
     const a = samples[0], b = samples[samples.length - 1];
-    if (moved && e.type === 'pointerup' && !reduceMq.matches && a && b && b !== a && e.timeStamp - b.t < 80) {
+    if (moved && e.type === 'pointerup' && !reduce() && a && b && b !== a && e.timeStamp - b.t < 80) {
       const dt = Math.max(1, b.t - a.t);
       vx = clamp((b.x - a.x) / dt, -4, 4);
       vy = clamp((b.y - a.y) / dt, -4, 4);
-      kick();
     }
     samples = [];
+    kick();
   }
   on(view, 'pointerup', release);
   on(view, 'pointercancel', release);
-  on(view, 'click', (e: Event) => {
-    if (performance.now() < suppressUntil) { e.preventDefault(); e.stopPropagation(); }
-  }, { capture: true });
   on(view, 'dragstart', (e: Event) => e.preventDefault());
+
+  /* A click on a tile (a tap, not a drag) selects its project / opens the lightbox; empty space deselects. */
+  on(view, 'click', (e: MouseEvent) => {
+    if (performance.now() < suppressUntil) { e.preventDefault(); e.stopPropagation(); return; }
+    const a = (e.target as HTMLElement).closest('.tile a');
+    if (a) {
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return; // let "open in new tab" through
+      e.preventDefault();
+      const t = tileOf.get(a);
+      if (t) onTile(t);
+    } else if (sel) deselect();
+  });
 
   /* ---------- wheel / trackpad ---------- */
   on(view, 'wheel', (e: WheelEvent) => {
@@ -235,30 +313,12 @@ export function initCanvas(root: HTMLElement): () => void {
     }
   }, { passive: false });
 
-  /* ---------- keyboard ---------- */
-  on(window, 'keydown', (e: KeyboardEvent) => {
-    const el = e.target as HTMLElement | null;
-    if (e.metaKey || e.ctrlKey || e.altKey || el?.closest('input,textarea,select,[contenteditable]')) return;
-    const dir: Record<string, [number, number]> = { ArrowLeft: [1, 0], ArrowRight: [-1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] };
-    const d = dir[e.key];
-    if (d) {
-      e.preventDefault(); touched();
-      if (reduceMq.matches) { pan(d[0] * 100, d[1] * 100); kick(); return; }
-      tween = null;
-      vx = clamp(vx + d[0] * 0.35, -1.4, 1.4);
-      vy = clamp(vy + d[1] * 0.35, -1.4, 1.4);
-      kick();
-    } else if (e.key === '+' || e.key === '=' || e.key === '-') {
-      touched();
-      zoomTo((tween?.s1 ?? cam.s) * (e.key === '-' ? 0.8 : 1.25), vw / 2, vh / 2);
-    }
-  });
-
   /* ---------- zoom buttons ---------- */
   root.querySelectorAll<HTMLElement>('[data-zoom]').forEach((btn) =>
     on(btn, 'click', () => {
       touched();
-      zoomTo((tween?.s1 ?? cam.s) * (btn.dataset.zoom === 'in' ? 1.25 : 0.8), vw / 2, vh / 2);
+      const z = btn.dataset.zoom;
+      if (z === 'fit') fitAll(); else zoomStep(z === 'in' ? 1.4 : 1 / 1.4);
     }),
   );
 
@@ -278,19 +338,265 @@ export function initCanvas(root: HTMLElement): () => void {
   }
   on(view, 'pointerleave', () => root.classList.remove('is-hover'));
 
-  // Tabbing to a tile pans it to the middle of the screen.
+  // Tabbing to a tile pans it into view (only for keyboard focus, never for clicks).
   on(view, 'focusin', (e: FocusEvent) => {
-    const t = (e.target as HTMLElement).closest('.tile');
-    if (!t) return;
+    const el = e.target as HTMLElement;
+    const t = el.closest('.tile');
+    if (!t || !el.matches(':focus-visible')) return;
     const r = t.getBoundingClientRect(), v = view.getBoundingClientRect();
+    if (r.left >= v.left && r.right <= v.right && r.top >= v.top + HEAD && r.bottom <= v.bottom) return;
     pan(v.left + v.width / 2 - (r.left + r.width / 2), v.top + v.height / 2 - (r.top + r.height / 2));
     kick();
   });
 
+  /* ---------- selection ---------- */
+  let sel: { id: string; tile: Tile; side: Side } | null = null;
+  let drawTimer = 0;
+
+  function syncURL(id: string | null) {
+    try {
+      const u = new URL(location.href);
+      if (id) u.searchParams.set('p', id); else u.searchParams.delete('p');
+      history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+    } catch {}
+  }
+
+  function bbox(pr: Proj) {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const t of pr.tiles) {
+      x0 = Math.min(x0, t.x); y0 = Math.min(y0, t.y);
+      x1 = Math.max(x1, t.x + t.w); y1 = Math.max(y1, t.y + t.h);
+    }
+    const pad = 28; // room for the sequence labels
+    return { x: x0 - pad, y: y0 - pad * 1.6, w: x1 - x0 + pad * 2, h: y1 - y0 + pad * 2.6 };
+  }
+
+  function drawEdges(pr: Proj, instant: boolean) {
+    clearTimeout(drawTimer);
+    edgesSvg.replaceChildren();
+    const ranks = [...new Set(pr.tiles.map((t) => t.rank))].sort((a, b) => a - b);
+    const paths: SVGPathElement[] = [];
+    for (const [ia, ib] of pr.edges) {
+      const A = pr.tiles[ia], B = pr.tiles[ib];
+      if (!A || !B) continue;
+      const ax = A.x + A.w / 2, ay = A.y + A.h / 2, bx = B.x + B.w / 2, by = B.y + B.h / 2;
+      const dx = bx - ax, dy = by - ay;
+      const d = Math.abs(dx) >= Math.abs(dy)
+        ? `M${ax} ${ay}C${ax + dx * 0.55} ${ay} ${bx - dx * 0.55} ${by} ${bx} ${by}`
+        : `M${ax} ${ay}C${ax} ${ay + dy * 0.55} ${bx} ${by - dy * 0.55} ${bx} ${by}`;
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', d);
+      path.setAttribute('pathLength', '1');
+      path.style.setProperty('--delay', (0.3 + ranks.indexOf(A.rank) * 0.2).toFixed(2) + 's');
+      paths.push(path);
+    }
+    edgesSvg.append(...paths);
+    if (instant || reduce()) return paths.forEach((p) => p.classList.add('drawn', 'done'));
+    void edgesSvg.getBoundingClientRect();
+    paths.forEach((p) => p.classList.add('drawn'));
+    drawTimer = window.setTimeout(() => paths.forEach((p) => p.classList.add('done')), (0.3 + ranks.length * 0.2 + 0.9) * 1000);
+  }
+
+  function fillPanel(pr: Proj, side: Side) {
+    panel.dataset.side = side;
+    panelBody.replaceChildren(pr.tpl ? pr.tpl.content.cloneNode(true) : '');
+    panelBody.scrollTop = 0;
+    panel.classList.remove('is-open', 'is-away');
+    void panel.offsetWidth; // restart the slide-out
+    pw = panel.offsetWidth || 320;
+    ph = panel.offsetHeight || 400;
+    placePanel();
+    panel.classList.add('is-open');
+  }
+
+  function selectionCam(pr: Proj, side: Side) {
+    const ins = { l: 24, r: 24, t: HEAD + 16, b: 24 };
+    if (sheetMq.matches) ins.b += Math.min(vh * 0.52, 520) + 8;
+    else ins[side === 'right' ? 'r' : 'l'] += pw + PANEL_GAP;
+    return camFor(bbox(pr), ins, 1.1);
+  }
+
+  function select(id: string, tile: Tile, opts: { instant?: boolean } = {}) {
+    const pr = projects.get(id);
+    if (!pr) return;
+    for (const t of tiles) t.el.classList.toggle('in-sel', t.p === id);
+    root.classList.add('has-sel');
+
+    // Panel side: outward from the group (the clicked tile's side of the group's centre), where the
+    // camera leaves room for it.
+    const box = bbox(pr);
+    const side: Side = tile.x + tile.w / 2 >= box.x + box.w / 2 ? 'right' : 'left';
+    const target = selectionCam(pr, side);
+
+    sel = { id, tile, side };
+    drawEdges(pr, !!opts.instant);
+    fillPanel(pr, side);
+    flyTo(target, opts.instant ? 0 : 800);
+    if (opts.instant) placePanel();
+    syncURL(id);
+  }
+
+  function deselect() {
+    if (!sel) return;
+    sel = null;
+    clearTimeout(drawTimer);
+    edgesSvg.replaceChildren();
+    for (const t of tiles) t.el.classList.remove('in-sel');
+    root.classList.remove('has-sel');
+    panel.classList.remove('is-open');
+    syncURL(null);
+  }
+  panel.querySelectorAll('[data-close]').forEach((b) => on(b, 'click', deselect));
+
+  // Bottom sheet: swipe down on the handle to close.
+  {
+    const grab = panel.querySelector<HTMLElement>('.cp-grab')!;
+    let y0 = 0, dy = 0, id = -1;
+    on(grab, 'pointerdown', (e: PointerEvent) => {
+      id = e.pointerId; y0 = e.clientY; dy = 0;
+      try { grab.setPointerCapture(id); } catch {}
+    });
+    on(grab, 'pointermove', (e: PointerEvent) => {
+      if (e.pointerId !== id) return;
+      dy = Math.max(0, e.clientY - y0);
+      panel.style.transition = 'none';
+      panel.style.transform = `translateY(${dy}px)`;
+    });
+    const end = (e: PointerEvent) => {
+      if (e.pointerId !== id) return;
+      id = -1;
+      panel.style.transition = '';
+      panel.style.transform = '';
+      if (dy > 60) deselect();
+    };
+    on(grab, 'pointerup', end);
+    on(grab, 'pointercancel', end);
+  }
+
+  function onTile(t: Tile) {
+    touched();
+    if (sel && sel.id === t.p) openLB(t);
+    else select(t.p, t);
+  }
+
+  /* ---------- lightbox ---------- */
+  let lb: { pr: Proj; idx: number } | null = null;
+  let lbReturn: HTMLElement | null = null;
+  const inertTargets = [view, panel, $('.cv-zoom')];
+
+  function renderLB() {
+    if (!lb) return;
+    const t = lb.pr.tiles[lb.idx];
+    const a = t.a;
+    lbStage.replaceChildren();
+    const yt = a.dataset.yt;
+    if (t.kind === 'video' && yt) {
+      const frame = document.createElement('div');
+      frame.className = 'lb-frame' + (a.dataset.vertical ? ' is-vertical' : '');
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0&playsinline=1`;
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      f.title = a.dataset.alt || a.dataset.title || '';
+      frame.append(f);
+      lbStage.append(frame);
+    } else {
+      const img = document.createElement('img');
+      img.sizes = '100vw';
+      if (a.dataset.srcset) img.srcset = a.dataset.srcset;
+      img.src = a.dataset.full || t.img.currentSrc || t.img.src;
+      img.alt = a.dataset.alt || a.dataset.title || '';
+      img.draggable = false;
+      lbStage.append(img);
+    }
+    lbN.textContent = `${lb.idx + 1} / ${lb.pr.tiles.length}`;
+    lbT.textContent = [a.dataset.title, a.dataset.alt && a.dataset.alt !== a.dataset.title ? a.dataset.alt : ''].filter(Boolean).join(' — ');
+    lbEl.querySelectorAll<HTMLElement>('[data-lb="prev"],[data-lb="next"]').forEach((b) => (b.hidden = lb!.pr.tiles.length < 2));
+  }
+  function openLB(t: Tile) {
+    const pr = projects.get(t.p)!;
+    lb = { pr, idx: t.i };
+    lbReturn = t.a;
+    lbEl.hidden = false;
+    inertTargets.forEach((el) => el.setAttribute('inert', ''));
+    renderLB();
+    lbEl.querySelector<HTMLElement>('[data-lb="close"]')!.focus({ preventScroll: true });
+  }
+  function closeLB() {
+    if (!lb) return;
+    lb = null;
+    lbEl.hidden = true;
+    lbStage.replaceChildren();
+    inertTargets.forEach((el) => el.removeAttribute('inert'));
+    lbReturn?.focus({ preventScroll: true });
+  }
+  function stepLB(d: number) {
+    if (!lb) return;
+    const n = lb.pr.tiles.length;
+    lb.idx = (lb.idx + d + n) % n;
+    renderLB();
+  }
+  lbEl.querySelectorAll<HTMLElement>('[data-lb]').forEach((b) =>
+    on(b, 'click', () => {
+      const k = b.dataset.lb;
+      if (k === 'close') closeLB(); else stepLB(k === 'next' ? 1 : -1);
+    }),
+  );
+  on(lbEl, 'click', (e: MouseEvent) => { // backdrop click closes
+    if (e.target === lbEl || e.target === lbStage) closeLB();
+  });
+  {
+    let x0 = 0, y0 = 0, id = -1;
+    on(lbStage, 'pointerdown', (e: PointerEvent) => { id = e.pointerId; x0 = e.clientX; y0 = e.clientY; });
+    on(lbStage, 'pointerup', (e: PointerEvent) => {
+      if (e.pointerId !== id) return;
+      id = -1;
+      const dx = e.clientX - x0, dy = e.clientY - y0;
+      if (e.pointerType !== 'mouse' && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) stepLB(dx < 0 ? 1 : -1);
+    });
+  }
+
+  /* ---------- keyboard ---------- */
+  on(window, 'keydown', (e: KeyboardEvent) => {
+    const el = e.target as HTMLElement | null;
+    if (e.metaKey || e.ctrlKey || e.altKey || (el as any)?.closest?.('input,textarea,select,[contenteditable]')) return;
+    if (lb) {
+      if (e.key === 'Escape') { e.preventDefault(); closeLB(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); stepLB(1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); stepLB(-1); }
+      else if (e.key === 'Tab') { // keep focus inside the dialog
+        const btns = [...lbEl.querySelectorAll<HTMLElement>('button:not([hidden])')];
+        const i = btns.indexOf(document.activeElement as HTMLElement);
+        e.preventDefault();
+        btns[(i + (e.shiftKey ? -1 : 1) + btns.length) % btns.length]?.focus();
+      }
+      return;
+    }
+    if (e.key === 'Escape') { if (sel) deselect(); return; }
+    const dir: Record<string, [number, number]> = { ArrowLeft: [1, 0], ArrowRight: [-1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] };
+    const d = dir[e.key];
+    if (d) {
+      if ((el as any)?.closest?.('.cv-panel')) return;
+      e.preventDefault(); touched();
+      if (reduce()) { pan(d[0] * 100, d[1] * 100); kick(); return; }
+      tw = null;
+      vx = clamp(vx + d[0] * 0.35, -1.4, 1.4);
+      vy = clamp(vy + d[1] * 0.35, -1.4, 1.4);
+      kick();
+    } else if (e.key === '+' || e.key === '=') { touched(); zoomStep(1.4); }
+    else if (e.key === '-' || e.key === '_') { touched(); zoomStep(1 / 1.4); }
+    else if (e.key === '0') { touched(); fitAll(); }
+  });
+
   /* ---------- resize ---------- */
   const ro = new ResizeObserver(() => {
+    const c = center();
     vw = view.clientWidth || innerWidth; vh = view.clientHeight || innerHeight;
-    build(level);
+    setCam({ cx: c.x, cy: c.y, s: Math.max(cam.s, minScale()) });
+    if (sel) {
+      pw = panel.offsetWidth || pw; ph = panel.offsetHeight || ph;
+      flyTo(selectionCam(projects.get(sel.id)!, sel.side), 0); // keep the group framed
+    }
     kick();
   });
   ro.observe(view);
@@ -298,18 +604,27 @@ export function initCanvas(root: HTMLElement): () => void {
   /* ---------- intro ---------- */
   const diag = Math.hypot(vw, vh) || 1;
   render();
-  for (const sl of slots) {
-    const cx = (sl.bx + sl.w / 2 + (sl.kx ?? 0) * W - cam.x) * cam.s - vw / 2;
-    const cy = (sl.by + sl.h / 2 + (sl.ky ?? 0) * H - cam.y) * cam.s - vh / 2;
+  for (const t of tiles) {
+    const cx = (t.x + t.w / 2 - cam.x) * cam.s - vw / 2;
+    const cy = (t.y + t.h / 2 - cam.y) * cam.s - vh / 2;
     const d = Math.hypot(cx, cy) / diag;
-    sl.el.firstElementChild instanceof HTMLElement &&
-      sl.el.firstElementChild.style.setProperty('--d', d < 0.7 ? (d * 0.7).toFixed(2) + 's' : '0s');
+    t.a.style.setProperty('--d', d < 0.7 ? (d * 0.7).toFixed(2) + 's' : '0s');
   }
   requestAnimationFrame(() => root.classList.add('is-ready'));
+
+  // Deep link: ?p=<project-slug>
+  const deep = new URLSearchParams(location.search).get('p');
+  if (deep && projects.has(deep)) {
+    // Attach the panel to the group's right-most tile: it opens outward, over the free space.
+    const first = projects.get(deep)!.tiles.filter(Boolean).sort((a, b) => b.x + b.w - (a.x + a.w))[0];
+    if (first) requestAnimationFrame(() => select(deep, first, { instant: true }));
+  }
 
   return () => {
     ac.abort();
     ro.disconnect();
+    clearTimeout(settleTimer);
+    clearTimeout(drawTimer);
     if (raf) cancelAnimationFrame(raf);
   };
 }

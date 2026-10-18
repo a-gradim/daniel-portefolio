@@ -1,7 +1,4 @@
-// Deterministic masonry pattern. Pure: same input -> same output (SSR-stable).
-export const COL_W = 300;
-const GAP_X = 56;
-const GAP_Y = 48;
+// Deterministic scatter layout, computed at build time. Pure: same input -> same output (SSR-stable).
 
 export function rng(seed: number) {
   let a = seed >>> 0;
@@ -26,33 +23,69 @@ export function shuffle<T>(arr: T[], seed: number) {
 
 export interface Placed { x: number; y: number; w: number; h: number }
 
-/** aspects = height/width per tile. Returns positions inside a W x H pattern that tiles seamlessly. */
-export function layoutPattern(aspects: number[], seed = 11) {
+const GAP = 40; // minimum whitespace between two tiles
+const MARGIN = 80; // whitespace between tiles and the field border
+const DENSITY = 3.2; // field area / total tile area (3-4x)
+const RATIO = 1.55; // field width / height
+
+/** Distance between two axis-aligned rectangles (0 when they touch or overlap). */
+const dist = (a: Placed, b: Placed) =>
+  Math.hypot(
+    Math.max(0, a.x - (b.x + b.w), b.x - (a.x + a.w)),
+    Math.max(0, a.y - (b.y + b.h), b.y - (a.y + a.h)),
+  );
+
+/**
+ * aspects = height/width per tile. Returns a finite, organic scatter: varied widths (~140-380px),
+ * no overlaps, blue-noise spacing (best-candidate sampling), field area ~3.2x the tile area.
+ */
+export function layoutScatter(aspects: number[], seed = 11) {
   const r = rng(seed);
-  const n = aspects.length;
-  const K = Math.min(9, Math.max(5, Math.ceil(Math.sqrt(n))));
-  const colY = Array.from({ length: K }, () => r() * GAP_Y * 3);
-  const cols: number[][] = Array.from({ length: K }, () => []);
-  const placed: Placed[] = [];
-
-  aspects.forEach((asp, i) => {
-    const ratio = Math.min(1.6, Math.max(0.6, asp));
-    const f = ratio < 0.9 ? (r() < 0.5 ? 1 : 0.82) : r() < 0.5 ? 0.62 : 0.8;
-    const w = Math.round(COL_W * f);
-    const h = Math.round(w * ratio);
-    let c = 0;
-    for (let k = 1; k < K; k++) if (colY[k] < colY[c]) c = k;
-    placed[i] = { x: c * (COL_W + GAP_X) + Math.round(r() * (COL_W - w)), y: colY[c], w, h };
-    colY[c] += h + GAP_Y;
-    cols[c].push(i);
+  const sizes = aspects.map((asp) => {
+    const ratio = Math.min(1.8, Math.max(0.55, asp || 1));
+    const portrait = ratio > 1.1;
+    const lo = 140;
+    const hi = ratio > 1.5 ? 250 : portrait ? 300 : 380;
+    const w = Math.round(lo + (hi - lo) * Math.pow(r(), 1.25));
+    return { w, h: Math.round(w * ratio) };
   });
+  const area = sizes.reduce((s, z) => s + z.w * z.h, 0);
+  let fieldArea = area * DENSITY;
+  const order = sizes.map((_, i) => i).sort((a, b) => sizes[b].w * sizes[b].h - sizes[a].w * sizes[a].h);
 
-  // Equalize column heights by spreading slack across gaps so every column ends at H.
-  const H = Math.ceil(Math.max(...colY));
-  cols.forEach((idx, c) => {
-    if (!idx.length) return;
-    const extra = (H - colY[c]) / idx.length;
-    idx.forEach((i, j) => (placed[i].y = Math.round(placed[i].y + extra * j)));
-  });
-  return { tiles: placed, W: K * (COL_W + GAP_X), H };
+  for (let attempt = 0; attempt < 12; attempt++, fieldArea *= 1.08) {
+    const H = Math.round(Math.sqrt(fieldArea / RATIO));
+    const W = Math.round(H * RATIO);
+    const placed: Placed[] = [];
+    const out: Placed[] = new Array(sizes.length);
+    let ok = true;
+    for (const i of order) {
+      const { w, h } = sizes[i];
+      let best: Placed | null = null;
+      let bestScore = -1;
+      for (let k = 0; k < 40; k++) {
+        const c: Placed = {
+          x: Math.round(MARGIN + r() * (W - 2 * MARGIN - w)),
+          y: Math.round(MARGIN + r() * (H - 2 * MARGIN - h)),
+          w,
+          h,
+        };
+        let nearest = Infinity;
+        for (const p of placed) {
+          const d = dist(c, p);
+          if (d < nearest) nearest = d;
+          if (nearest < GAP) break;
+        }
+        if (nearest >= GAP && nearest > bestScore) {
+          bestScore = nearest;
+          best = c;
+        }
+      }
+      if (!best) { ok = false; break; }
+      placed.push(best);
+      out[i] = best;
+    }
+    if (ok) return { tiles: out, W, H };
+  }
+  throw new Error('layoutScatter: could not place all tiles');
 }

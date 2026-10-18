@@ -1,47 +1,87 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import { localePath, useT, type Locale } from '../../i18n/ui';
-import { pick, projectImages, type Project } from '../../lib/content';
-import { layoutPattern, shuffle } from './layout';
+import { mediaEdges, pick, projectMedia, youtubeId, type Project } from '../../lib/content';
+import { layoutScatter, shuffle } from './layout';
 
 interface Props { projects: Project[]; locale: Locale }
 const { projects, locale } = Astro.props;
 const t = useT(locale);
 
-const items = projects
-  .filter((p) => p.data.featured)
-  .flatMap((p) =>
-    projectImages(p).map((img) => ({
-      img,
-      href: localePath(locale, '/work/' + p.id),
-      title: p.data.title,
-      discipline: pick(p.data.discipline, locale),
-      project: p.id,
-    })),
-  );
+const featured = projects.filter((p) => p.data.featured);
+const groups = featured.map((p) => ({ p, media: projectMedia(p) }));
 
-// Pad small sets by repeating so the pattern always has enough tiles to fill a screen.
-let list = shuffle(items, 5);
-while (items.length && list.length < 20) list = list.concat(shuffle(items, list.length + 7));
-const { tiles, W, H } = layoutPattern(list.map((i) => i.img.src.height / i.img.src.width));
+// Every media item appears exactly once; the shuffle mixes all projects together.
+const flat = groups.flatMap(({ p, media }) => media.map((m, i) => ({ p, m, i })));
+const list = shuffle(flat, 17);
+const { tiles, W, H } = layoutScatter(list.map((o) => o.m.src.height / o.m.src.width), 23);
+
+// Large versions for the lightbox (the grid itself uses the small widths below).
+const full = await Promise.all(
+  list.map((o) => getImage({ src: o.m.src, width: 1920, widths: [1280, 1920], sizes: '100vw' })),
+);
+
+const projectInfo = groups.map(({ p, media }) => ({
+  id: p.id,
+  title: p.data.title,
+  meta: [p.data.client, pick(p.data.discipline, locale), p.data.year].filter(Boolean).join(' · '),
+  credits: (p.data.credits || '').trim(),
+  paragraphs: pick(p.data.body, locale).split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean),
+  href: localePath(locale, '/work/' + p.id),
+  edges: mediaEdges(media),
+}));
 ---
 <div class="cv" data-canvas data-w={W} data-h={H}>
   <div class="cv-view" role="region" aria-label={t('canvas.hint')}>
-    <div class="cv-layer">
-      {list.map((it, i) => (
-        <div class="tile" data-x={tiles[i].x} data-y={tiles[i].y} data-w={tiles[i].w} data-h={tiles[i].h}
-          style={`left:${tiles[i].x}px;top:${tiles[i].y}px;width:${tiles[i].w}px;height:${tiles[i].h}px`}>
-          <a href={it.href} data-title={it.title} data-discipline={it.discipline} draggable="false"
-            aria-label={it.discipline ? `${it.title} — ${it.discipline}` : it.title}>
-            <Image src={it.img.src} alt={it.img.alt} width={640} widths={[320, 640, 960]}
-              sizes={`${tiles[i].w}px`} loading="lazy" decoding="async" draggable="false" />
-          </a>
-        </div>
-      ))}
+    <div class="cv-layer" style={`width:${W}px;height:${H}px`}>
+      <svg class="cv-edges" width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true"></svg>
+      {list.map((o, k) => {
+        const tl = tiles[k];
+        const disc = pick(o.p.data.discipline, locale);
+        const label = [o.p.data.title, disc, o.m.kind === 'video' ? t('project.play') : ''].filter(Boolean).join(' — ');
+        return (
+          <div class="tile" data-p={o.p.id} data-i={o.i} data-rank={o.m.rank} data-kind={o.m.kind}
+            data-x={tl.x} data-y={tl.y} data-w={tl.w} data-h={tl.h}
+            style={`left:${tl.x}px;top:${tl.y}px;width:${tl.w}px;height:${tl.h}px`}>
+            <a href={localePath(locale, '/work/' + o.p.id)} draggable="false" aria-label={label}
+              data-title={o.p.data.title} data-discipline={disc} data-alt={o.m.alt}
+              data-full={full[k].src} data-srcset={full[k].srcSet.attribute}
+              data-yt={youtubeId(o.m.youtube) ?? undefined} data-vertical={o.m.vertical ? '1' : undefined}>
+              <Image src={o.m.src} alt={o.m.alt} width={640} widths={[160, 320, 640, 960]}
+                sizes={`${Math.round(tl.w * 0.4)}px`} loading="lazy" decoding="async" draggable="false" />
+              {o.m.kind === 'video' && <span class="badge" aria-hidden="true">▶</span>}
+            </a>
+            {o.m.seq && <span class="seq" aria-hidden="true">{o.m.seq}</span>}
+          </div>
+        );
+      })}
     </div>
   </div>
 
+  {projectInfo.map((pi) => (
+    <template data-panel={pi.id} data-edges={JSON.stringify(pi.edges)}>
+      <h2 class="cp-title">{pi.title}</h2>
+      {pi.meta && <p class="cp-meta">{pi.meta}</p>}
+      {pi.credits && (
+        <div class="cp-credits"><span class="cp-label">{t('project.credits')}</span><p>{pi.credits}</p></div>
+      )}
+      {pi.paragraphs.length > 0 && <div class="cp-text">{pi.paragraphs.map((s) => <p>{s}</p>)}</div>}
+      <a class="cp-link" href={pi.href}>{t('canvas.viewProject')} →</a>
+    </template>
+  ))}
+
   <div class="cv-caption" aria-hidden="true"><span class="cv-ct"></span><span class="cv-cd"></span></div>
+
+  <aside class="cv-panel" aria-label={t('canvas.details')} data-panel-el>
+    <div class="cp-clip">
+      <div class="cp-in">
+        <button type="button" class="cp-grab" data-close aria-label={t('a11y.close')}><span></span></button>
+        <button type="button" class="cp-x" data-close aria-label={t('a11y.close')}>×</button>
+        <div class="cp-scroll" data-panel-content></div>
+      </div>
+    </div>
+  </aside>
+
   <p class="cv-hint" aria-hidden="true">
     <span class="mouse">{t('canvas.hint')}</span><span class="touch">{t('canvas.hintTouch')}</span>
   </p>
@@ -49,6 +89,19 @@ const { tiles, W, H } = layoutPattern(list.map((i) => i.img.src.height / i.img.s
     <button type="button" data-zoom="out" aria-label={t('canvas.zoomOut')}>−</button>
     <span data-zoom-label>100%</span>
     <button type="button" data-zoom="in" aria-label={t('canvas.zoomIn')}>+</button>
+    <button type="button" data-zoom="fit" class="fit" aria-label={t('canvas.fit')} title={`${t('canvas.fit')} (0)`}>
+      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M1 5V1h4M9 1h4v4M13 9v4H9M5 13H1V9" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="cv-lb" role="dialog" aria-modal="true" aria-label={t('canvas.viewer')} hidden>
+    <div class="lb-stage" data-lb-stage></div>
+    <button type="button" class="lb-btn lb-close" data-lb="close" aria-label={t('a11y.close')}>×</button>
+    <button type="button" class="lb-btn lb-prev" data-lb="prev" aria-label={t('project.prev')}>←</button>
+    <button type="button" class="lb-btn lb-next" data-lb="next" aria-label={t('project.next')}>→</button>
+    <p class="lb-cap"><span data-lb-n></span><span data-lb-t></span></p>
   </div>
   <noscript><style>.cv:not(.is-ready) .tile{opacity:1}</style></noscript>
 </div>
@@ -60,10 +113,22 @@ const { tiles, W, H } = layoutPattern(list.map((i) => i.img.src.height / i.img.s
     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; overscroll-behavior: none;
   }
   .cv.is-dragging .cv-view { cursor: grabbing; }
-  .cv-layer { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; will-change: transform; }
-  .tile { position: absolute; }
+  .cv-layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; --inv: 1; }
+  .cv.is-moving .cv-layer { will-change: transform; }
+  .cv-edges { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+  .cv-edges :global(path) {
+    fill: none; stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke;
+    stroke-linecap: round; opacity: 0.85;
+    stroke-dasharray: 1; stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.7s cubic-bezier(0.45, 0, 0.2, 1) var(--delay, 0s);
+  }
+  .cv-edges :global(path.drawn) { stroke-dashoffset: 0; }
+  .cv-edges :global(path.done) { stroke-dasharray: none; transition: none; }
+
+  .tile { position: absolute; transition: opacity var(--dur) var(--ease); }
   .cv:not(.is-ready) .tile { opacity: 0; }
-  .tile a { display: block; width: 100%; height: 100%; background: var(--surface); cursor: inherit; -webkit-user-drag: none; }
+  .cv.has-sel .tile:not(.in-sel) { opacity: 0.12; }
+  .tile a { position: relative; container-type: inline-size; display: block; width: 100%; height: 100%; background: var(--surface); cursor: inherit; -webkit-user-drag: none; }
   .tile :global(img) {
     display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none;
     -webkit-user-drag: none; transition: opacity var(--dur) var(--ease);
@@ -72,8 +137,23 @@ const { tiles, W, H } = layoutPattern(list.map((i) => i.img.src.height / i.img.s
   .cv.is-ready .tile a { animation: cv-in var(--dur-slow) var(--ease) backwards; animation-delay: var(--d, 0s); }
   @keyframes cv-in { from { opacity: 0; transform: scale(0.92); } }
   @media (hover: hover) {
-    .cv:not(.is-dragging) .cv-layer:has(a:hover) .tile a:not(:hover) :global(img) { opacity: 0.35; }
+    .cv:not(.is-dragging):not(.has-sel) .cv-layer:has(a:hover) .tile a:not(:hover) :global(img) { opacity: 0.35; }
   }
+
+  .badge {
+    --b: min(calc(36px * var(--inv)), 42cqw);
+    position: absolute; left: 50%; top: 50%; translate: -50% -50%; pointer-events: none;
+    width: var(--b); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
+    background: var(--ink); color: var(--bg); opacity: 0.92; font-size: calc(var(--b) * 0.42); line-height: 1;
+    padding-left: 0.08em;
+  }
+  .seq {
+    position: absolute; left: 0; bottom: 100%; pointer-events: none; z-index: 1; display: none;
+    transform-origin: 0 100%; transform: scale(var(--inv)); padding: 2px 6px 3px 0; background: var(--bg);
+    font-family: var(--font-label); font-size: var(--fs-xs); letter-spacing: var(--tracking-label);
+    text-transform: var(--case-label); line-height: 1.2; color: var(--ink); white-space: nowrap;
+  }
+  .tile.in-sel .seq { display: block; }
 
   .cv-caption, .cv-hint, .cv-zoom {
     font-family: var(--font-label); font-size: var(--fs-xs); letter-spacing: var(--tracking-label);
@@ -96,7 +176,7 @@ const { tiles, W, H } = layoutPattern(list.map((i) => i.img.src.height / i.img.s
     white-space: nowrap; margin: 0; opacity: 0; animation: cv-fade var(--dur-slow) var(--ease) 1.2s forwards;
     transition: opacity var(--dur) var(--ease);
   }
-  .cv.is-touched .cv-hint { animation: none; opacity: 0; }
+  .cv.is-touched .cv-hint, .cv.has-sel .cv-hint { animation: none; opacity: 0; }
   .cv-hint .touch { display: none; }
   @media (pointer: coarse) { .cv-hint .mouse { display: none; } .cv-hint .touch { display: inline; } }
   @media (max-width: 640px) { .cv-hint { bottom: calc(var(--gutter) + 44px + var(--space-2) + env(safe-area-inset-bottom, 0px)); } }
@@ -108,17 +188,116 @@ const { tiles, W, H } = layoutPattern(list.map((i) => i.img.src.height / i.img.s
     background: var(--bg); border: 1px solid var(--hair);
   }
   .cv-zoom button {
-    width: 44px; height: 44px; padding: 0; border: 0; background: none; color: var(--ink); cursor: pointer;
-    font: inherit; font-size: var(--fs-md); touch-action: manipulation;
+    display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: none;
+    color: var(--ink); cursor: pointer; font: inherit; font-size: var(--fs-md); touch-action: manipulation;
   }
+  .cv-zoom button.fit { border-left: 1px solid var(--hair); }
   .cv-zoom button:hover { background: var(--surface); }
   .cv-zoom button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
   .cv-zoom [data-zoom-label] { min-width: 48px; text-align: center; color: var(--muted); font-variant-numeric: tabular-nums; }
 
+  /* ---- case study panel (screen space; JS sets --px/--py every frame) ---- */
+  .cv-panel {
+    position: absolute; left: 0; top: 0; z-index: 3; width: 320px; max-height: calc(100% - 128px);
+    display: flex; transform: translate3d(var(--px, 0px), var(--py, 0px), 0);
+    visibility: hidden; pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease), visibility 0s linear var(--dur);
+  }
+  .cv-panel.is-open { visibility: visible; pointer-events: auto; transition: opacity var(--dur-fast) var(--ease); }
+  .cv-panel.is-away { opacity: 0; pointer-events: none; }
+  .cp-clip {
+    display: flex; width: 100%; min-height: 0; clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--dur) var(--ease);
+  }
+  .cv-panel[data-side='left'] .cp-clip { clip-path: inset(0 0 0 100%); }
+  .cv-panel.is-open .cp-clip { clip-path: inset(-2px); }
+  .cp-in {
+    position: relative; display: flex; flex-direction: column; width: 100%; min-height: 0;
+    background: var(--bg); border: 1px solid var(--hair); color: var(--ink);
+    transform: translateX(-28px); transition: transform var(--dur) var(--ease);
+  }
+  .cv-panel[data-side='left'] .cp-in { transform: translateX(28px); }
+  .cv-panel.is-open .cp-in { transform: none; }
+  .cp-grab { display: none; }
+  .cp-x {
+    position: absolute; right: 0; top: 0; z-index: 1; width: 44px; height: 44px; border: 0; background: none;
+    color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer; touch-action: manipulation;
+  }
+  .cp-x:hover { opacity: 0.6; }
+  .cp-x:focus-visible, .cp-grab:focus-visible, .cp-link:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .cp-scroll { overflow-y: auto; overscroll-behavior: contain; padding: var(--space-4) var(--space-4) var(--space-4); min-height: 0; }
+  .cp-scroll :global(.cp-title) { font-size: var(--fs-md); font-weight: 500; line-height: 1.25; padding-right: 36px; }
+  .cp-scroll :global(.cp-meta), .cp-scroll :global(.cp-label) {
+    font-family: var(--font-label); font-size: var(--fs-xs); letter-spacing: var(--tracking-label);
+    text-transform: var(--case-label); color: var(--muted); line-height: 1.4;
+  }
+  .cp-scroll :global(.cp-meta) { margin-top: var(--space-2); }
+  .cp-scroll :global(.cp-credits) { margin-top: var(--space-4); }
+  .cp-scroll :global(.cp-credits p) { margin-top: var(--space-1); font-size: var(--fs-sm); white-space: pre-line; line-height: 1.45; }
+  .cp-scroll :global(.cp-text) { margin-top: var(--space-4); display: grid; gap: var(--space-3); font-size: var(--fs-sm); line-height: 1.55; }
+  .cp-scroll :global(.cp-link) {
+    display: inline-flex; align-items: center; min-height: 44px; margin-top: var(--space-4);
+    font-family: var(--font-label); font-size: var(--fs-xs); letter-spacing: var(--tracking-label);
+    text-transform: var(--case-label); border-bottom: 1px solid var(--ink); align-self: flex-start;
+  }
+  .cp-scroll :global(.cp-link:hover) { opacity: 0.6; }
+
+  @media (max-width: 767px) {
+    .cv-panel {
+      left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 52dvh; transform: translateY(105%);
+      transition: transform var(--dur) var(--ease), visibility 0s linear var(--dur);
+    }
+    .cv-panel.is-open { transform: none; transition: transform var(--dur) var(--ease); }
+    .cv-panel.is-away { opacity: 1; pointer-events: auto; }
+    .cp-clip, .cv-panel[data-side='left'] .cp-clip { clip-path: none; }
+    .cp-in, .cv-panel[data-side='left'] .cp-in { transform: none; border-width: 1px 0 0; }
+    .cp-grab {
+      display: grid; place-items: center; width: 100%; height: 28px; border: 0; background: none; padding: 0;
+      cursor: pointer; touch-action: none; flex: none;
+    }
+    .cp-grab span { width: 36px; height: 3px; border-radius: 2px; background: var(--hair); }
+    .cp-x { top: 0; }
+    .cp-scroll { padding: var(--space-1) var(--space-4) calc(var(--space-4) + 44px + env(safe-area-inset-bottom, 0px)); }
+    .cv.has-sel .cv-zoom { display: none; }
+  }
+
+  /* ---- lightbox ---- */
+  .cv-lb {
+    position: absolute; inset: 0; z-index: 100; display: grid; place-items: center; background: var(--bg);
+    animation: cv-fade-in var(--dur) var(--ease);
+  }
+  .cv-lb[hidden] { display: none; }
+  @keyframes cv-fade-in { from { opacity: 0; } }
+  .lb-stage { position: absolute; inset: 72px 0 64px; display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); place-items: center; touch-action: pan-y; padding: 0 56px; }
+  .lb-stage :global(img) { max-width: 100%; max-height: 100%; min-height: 0; width: auto; height: auto; object-fit: contain; }
+  .lb-stage :global(.lb-frame) { aspect-ratio: 16 / 9; width: min(100%, calc((100dvh - 136px) * 16 / 9)); background: var(--surface); }
+  .lb-stage :global(.lb-frame.is-vertical) { aspect-ratio: 9 / 16; width: auto; height: 100%; max-width: 100%; }
+  .lb-stage :global(iframe) { width: 100%; height: 100%; border: 0; }
+  .lb-btn {
+    position: absolute; z-index: 1; width: 44px; height: 44px; display: grid; place-items: center; border: 0;
+    background: none; color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer; touch-action: manipulation;
+  }
+  .lb-btn[hidden] { display: none; }
+  .lb-btn:hover { opacity: 0.6; }
+  .lb-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .lb-close { right: max(var(--gutter), env(safe-area-inset-right)); top: calc(var(--header-h) + 8px); }
+  .lb-prev, .lb-next { top: 50%; margin-top: -22px; }
+  .lb-prev { left: 4px; }
+  .lb-next { right: 4px; }
+  .lb-cap {
+    position: absolute; left: var(--gutter); right: 120px; bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+    margin: 0; display: flex; gap: var(--space-3); font-family: var(--font-label); font-size: var(--fs-xs);
+    letter-spacing: var(--tracking-label); text-transform: var(--case-label); line-height: 1.3; pointer-events: none;
+  }
+  .lb-cap [data-lb-n] { color: var(--muted); font-variant-numeric: tabular-nums; flex: none; }
+
   @media (prefers-reduced-motion: reduce) {
     .cv.is-ready .tile a { animation: none; }
     .cv-hint { animation: none; opacity: 1; }
-    .cv.is-touched .cv-hint { opacity: 0; }
+    .cv.is-touched .cv-hint, .cv.has-sel .cv-hint { opacity: 0; }
+    .cv-lb { animation: none; }
+    .cv-edges :global(path) { transition: none; }
+    .cp-clip, .cp-in, .cv-panel { transition: none !important; }
   }
 </style>
 
