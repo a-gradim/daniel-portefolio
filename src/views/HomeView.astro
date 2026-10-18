@@ -1,0 +1,7 @@
+---
+import Base from '../layouts/Base.astro';
+import type { Locale } from '../i18n/ui';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+---
+<Base locale={locale}><main>Home (canvas) — TODO</main></Base>

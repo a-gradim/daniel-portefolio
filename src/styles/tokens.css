@@ -1,0 +1,65 @@
+/* Design tokens. Two themes selected by <html data-theme="dark|light">.
+   Dark = Daniel's current site. Light = sub.global-inspired. Components must only use these vars. */
+:root {
+  --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --fs-xs: 0.6875rem;   /* 11px — labels, meta */
+  --fs-sm: 0.8125rem;   /* 13px — nav, body small */
+  --fs-md: 1rem;
+  --fs-lg: clamp(1.5rem, 3vw, 2.25rem);
+  --fs-xl: clamp(2.5rem, 8vw, 7rem); /* big titles */
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 40px;
+  --space-6: 64px;
+  --gutter: clamp(16px, 3vw, 32px);
+  --header-h: 56px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 0.2s;
+  --dur: 0.42s;
+  --dur-slow: 0.8s;
+
+  --radius: 0px;
+  --z-header: 50;
+  --z-overlay: 100;
+}
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #050505;
+  --ink: #f1eee8;
+  --muted: rgba(241, 238, 232, 0.45);
+  --hair: rgba(255, 255, 255, 0.13);
+  --surface: #111;
+  --accent: #f1eee8;
+  --tracking-label: 0.08em;
+  --case-label: uppercase;
+  --font-label: var(--font-sans);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #ffffff;
+  --ink: #0a0a0a;
+  --muted: rgba(10, 10, 10, 0.45);
+  --hair: rgba(10, 10, 10, 0.12);
+  --surface: #f2f2f2;
+  --accent: #0a0a0a;
+  --tracking-label: 0.02em;
+  --case-label: uppercase;
+  --font-label: var(--font-mono);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0s;
+    --dur: 0s;
+    --dur-slow: 0s;
+  }
+}
