@@ -51,7 +51,11 @@ export default config({
         client: fields.text({ label: 'Client / note' }),
         cover: image('Cover image'),
         gallery: fields.array(
-          fields.object({ image: image('Image'), alt: fields.text({ label: 'Alt text' }) }),
+          fields.object({
+            image: image('Image'),
+            alt: fields.text({ label: 'Alt text' }),
+            seq: fields.text({ label: 'Position (e.g. 1, 2, 3a, 3b) — empty = from file name, then list order' }),
+          }),
           { label: 'Gallery', itemLabel: (p) => p.fields.alt.value || 'Image' },
         ),
         videos: fields.array(
@@ -60,6 +64,7 @@ export default config({
             title: fields.text({ label: 'Title' }),
             vertical: fields.checkbox({ label: 'Vertical (9:16)', defaultValue: false }),
             poster: image('Poster (optional)'),
+            seq: fields.text({ label: 'Position (e.g. 1, 2, 3a, 3b) — empty = from file name, then list order' }),
           }),
           { label: 'Videos', itemLabel: (p) => p.fields.title.value || 'Video' },
         ),
