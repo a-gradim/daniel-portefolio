@@ -1,0 +1,42 @@
+title: "Traz os Monstros — Album / Artwork"
+section: traz
+year: null
+discipline:
+  en: Artwork
+  pt: "Arte gráfica"
+client: Traz os Monstros
+cover: ../../assets/projects/traz-album/01-capa-album.webp
+gallery:
+  - image: ../../assets/projects/traz-album/02-contracapa.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/03-contracapa2.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/05-foto6.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/07-406013881-661152136174677-8470489694586562779-n.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/08-whatsapp-image-2026-02-10-at-22-09-55.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/10-whatsapp-image-2024-02-24-at-10-31-13-2.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/12-whatsapp-image-2026-02-09-at-22-55-10.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/13-whatsapp-image-2026-02-10-at-22-09-54-1.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/16-whatsapp-image-2026-10-06-at-19-27-00-1.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/17-whatsapp-image-2026-10-06-at-19-27-00.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/01-1-img-1288.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/02-2-img-1281.webp
+    alt: ''
+  - image: ../../assets/projects/traz-album/03-3-img-1280.webp
+    alt: ''
+videos: []
+credits: "Visual Development · Artwork · Editing"
+body:
+  en: "A collection of album-related visual material developed around the broader identity of Traz os Monstros.\n\nPhotography, graphic treatment and object-based imagery are brought together to create a rough, tactile visual language that can extend beyond a single cover or format.\n\nThe pieces are treated as parts of the same visual world, keeping the album artwork and supporting images connected rather than isolated."
+  pt: "Um conjunto de material visual associado ao álbum, desenvolvido em torno da identidade mais ampla dos Traz os Monstros.\n\nFotografia, tratamento gráfico e imagens de objetos reúnem-se para criar uma linguagem visual crua e tátil, que pode ir além de uma única capa ou formato.\n\nAs peças são tratadas como partes de um mesmo universo visual, mantendo a capa do álbum e as imagens de apoio ligadas entre si, em vez de isoladas."
+featured: true
+order: 1
