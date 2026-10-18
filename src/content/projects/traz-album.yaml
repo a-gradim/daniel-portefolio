@@ -7,31 +7,44 @@ discipline:
 client: Traz os Monstros
 cover: ../../assets/projects/traz-album/01-capa-album.webp
 gallery:
-  - image: ../../assets/projects/traz-album/02-contracapa.webp
+  - seq: '2'
+    image: ../../assets/projects/traz-album/02-contracapa.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/03-contracapa2.webp
+  - seq: '3'
+    image: ../../assets/projects/traz-album/03-contracapa2.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/05-foto6.webp
+  - seq: '4'
+    image: ../../assets/projects/traz-album/05-foto6.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/07-406013881-661152136174677-8470489694586562779-n.webp
+  - seq: '5'
+    image: ../../assets/projects/traz-album/07-406013881-661152136174677-8470489694586562779-n.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/08-whatsapp-image-2026-02-10-at-22-09-55.webp
+  - seq: '6'
+    image: ../../assets/projects/traz-album/08-whatsapp-image-2026-02-10-at-22-09-55.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/10-whatsapp-image-2024-02-24-at-10-31-13-2.webp
+  - seq: '7'
+    image: ../../assets/projects/traz-album/10-whatsapp-image-2024-02-24-at-10-31-13-2.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/12-whatsapp-image-2026-02-09-at-22-55-10.webp
+  - seq: '8'
+    image: ../../assets/projects/traz-album/12-whatsapp-image-2026-02-09-at-22-55-10.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/13-whatsapp-image-2026-02-10-at-22-09-54-1.webp
+  - seq: '9'
+    image: ../../assets/projects/traz-album/13-whatsapp-image-2026-02-10-at-22-09-54-1.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/16-whatsapp-image-2026-10-06-at-19-27-00-1.webp
+  - seq: '10'
+    image: ../../assets/projects/traz-album/16-whatsapp-image-2026-10-06-at-19-27-00-1.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/17-whatsapp-image-2026-10-06-at-19-27-00.webp
+  - seq: '11'
+    image: ../../assets/projects/traz-album/17-whatsapp-image-2026-10-06-at-19-27-00.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/01-1-img-1288.webp
+  - seq: '12'
+    image: ../../assets/projects/traz-album/01-1-img-1288.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/02-2-img-1281.webp
+  - seq: '13'
+    image: ../../assets/projects/traz-album/02-2-img-1281.webp
     alt: ''
-  - image: ../../assets/projects/traz-album/03-3-img-1280.webp
+  - seq: '14'
+    image: ../../assets/projects/traz-album/03-3-img-1280.webp
     alt: ''
 videos: []
 credits: "Visual Development · Artwork · Editing"

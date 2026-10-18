@@ -8,19 +8,23 @@ client: Traz os Monstros
 cover: ../../assets/projects/traz-visuals/tom-1-cv.jpg
 gallery: []
 videos:
-  - youtube: null
+  - seq: '1'
+    youtube: null
     title: tom 1 cv
     vertical: false
     poster: ../../assets/projects/traz-visuals/tom-1-cv.jpg
-  - youtube: null
+  - seq: '2'
+    youtube: null
     title: tom 2 cv
     vertical: false
     poster: ../../assets/projects/traz-visuals/tom-2-cv.jpg
-  - youtube: null
+  - seq: '3'
+    youtube: null
     title: megaa cube tom1
     vertical: false
     poster: ../../assets/projects/traz-visuals/megaa-cube-tom1.jpg
-  - youtube: null
+  - seq: '4'
+    youtube: null
     title: cube tom1
     vertical: false
     poster: ../../assets/projects/traz-visuals/cube-tom1.jpg

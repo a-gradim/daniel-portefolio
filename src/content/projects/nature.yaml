@@ -7,25 +7,35 @@ discipline:
 client: Personal Work
 cover: ../../assets/projects/nature/01-1-p1480119.webp
 gallery:
-  - image: ../../assets/projects/nature/02-2-p1480083.webp
+  - seq: '2'
+    image: ../../assets/projects/nature/02-2-p1480083.webp
     alt: ''
-  - image: ../../assets/projects/nature/03-3-p1480078.webp
+  - seq: '3'
+    image: ../../assets/projects/nature/03-3-p1480078.webp
     alt: ''
-  - image: ../../assets/projects/nature/04-4-p1480041.webp
+  - seq: '4'
+    image: ../../assets/projects/nature/04-4-p1480041.webp
     alt: ''
-  - image: ../../assets/projects/nature/05-5-p1480030.webp
+  - seq: '5'
+    image: ../../assets/projects/nature/05-5-p1480030.webp
     alt: ''
-  - image: ../../assets/projects/nature/06-6-p1480028.webp
+  - seq: '6'
+    image: ../../assets/projects/nature/06-6-p1480028.webp
     alt: ''
-  - image: ../../assets/projects/nature/07-7-p1430321.webp
+  - seq: '7'
+    image: ../../assets/projects/nature/07-7-p1430321.webp
     alt: ''
-  - image: ../../assets/projects/nature/08-8-p1430235.webp
+  - seq: '8'
+    image: ../../assets/projects/nature/08-8-p1430235.webp
     alt: ''
-  - image: ../../assets/projects/nature/09-9-p1420327.webp
+  - seq: '9'
+    image: ../../assets/projects/nature/09-9-p1420327.webp
     alt: ''
-  - image: ../../assets/projects/nature/10-10-p1420320.webp
+  - seq: '10'
+    image: ../../assets/projects/nature/10-10-p1420320.webp
     alt: ''
-  - image: ../../assets/projects/nature/11-11-p1410249.webp
+  - seq: '11'
+    image: ../../assets/projects/nature/11-11-p1410249.webp
     alt: ''
 videos: []
 credits: "Daniel Neto · Photography · Image Editing"

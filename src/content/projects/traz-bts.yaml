@@ -7,51 +7,74 @@ discipline:
 client: Traz os Monstros
 cover: ../../assets/projects/traz-bts/02-traz-os-monstros-2.webp
 gallery:
-  - image: ../../assets/projects/traz-bts/03-traz-os-monstros-3.webp
+  - seq: '2'
+    image: ../../assets/projects/traz-bts/03-traz-os-monstros-3.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/04-traz-os-monstros1.webp
+  - seq: '3'
+    image: ../../assets/projects/traz-bts/04-traz-os-monstros1.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/06-whatsapp-image-2025-05-26-at-00-51-59.webp
+  - seq: '4'
+    image: ../../assets/projects/traz-bts/06-whatsapp-image-2025-05-26-at-00-51-59.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/08-whatsapp-image-2025-05-26-at-00-52-08-2.webp
+  - seq: '5'
+    image: ../../assets/projects/traz-bts/08-whatsapp-image-2025-05-26-at-00-52-08-2.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/09-whatsapp-image-2025-05-27-at-15-27-48-1.webp
+  - seq: '6'
+    image: ../../assets/projects/traz-bts/09-whatsapp-image-2025-05-27-at-15-27-48-1.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/10-whatsapp-image-2025-05-27-at-15-27-48.webp
+  - seq: '7'
+    image: ../../assets/projects/traz-bts/10-whatsapp-image-2025-05-27-at-15-27-48.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/11-whatsapp-image-2025-05-27-at-15-27-49.webp
+  - seq: '8'
+    image: ../../assets/projects/traz-bts/11-whatsapp-image-2025-05-27-at-15-27-49.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/15-1-p1430994.webp
+  - seq: '9'
+    image: ../../assets/projects/traz-bts/15-1-p1430994.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/16-1-p1440030.webp
+  - seq: '10'
+    image: ../../assets/projects/traz-bts/16-1-p1440030.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/17-2-p1430949.webp
+  - seq: '11'
+    image: ../../assets/projects/traz-bts/17-2-p1430949.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/19-3-p1430777.webp
+  - seq: '12'
+    image: ../../assets/projects/traz-bts/19-3-p1430777.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/21-4-p1430770.webp
+  - seq: '13'
+    image: ../../assets/projects/traz-bts/21-4-p1430770.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/22-4-p1440019.webp
+  - seq: '14'
+    image: ../../assets/projects/traz-bts/22-4-p1440019.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/23-5-p1430722.webp
+  - seq: '15'
+    image: ../../assets/projects/traz-bts/23-5-p1430722.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/24-6-p1430719.webp
+  - seq: '16'
+    image: ../../assets/projects/traz-bts/24-6-p1430719.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/25-6-p1430906.webp
+  - seq: '17'
+    image: ../../assets/projects/traz-bts/25-6-p1430906.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/26-7-p1430716.webp
+  - seq: '18'
+    image: ../../assets/projects/traz-bts/26-7-p1430716.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/27-7-p1430899.webp
+  - seq: '19'
+    image: ../../assets/projects/traz-bts/27-7-p1430899.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/28-8-p1430700.webp
+  - seq: '20'
+    image: ../../assets/projects/traz-bts/28-8-p1430700.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/29-9-p1430672.webp
+  - seq: '21'
+    image: ../../assets/projects/traz-bts/29-9-p1430672.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/30-9-p1430875.webp
+  - seq: '22'
+    image: ../../assets/projects/traz-bts/30-9-p1430875.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/31-10-p1430661.webp
+  - seq: '23'
+    image: ../../assets/projects/traz-bts/31-10-p1430661.webp
     alt: ''
-  - image: ../../assets/projects/traz-bts/32-11-p1430657.webp
+  - seq: '24'
+    image: ../../assets/projects/traz-bts/32-11-p1430657.webp
     alt: ''
 videos: []
 credits: "Photography · Editing"

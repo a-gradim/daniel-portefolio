@@ -66,7 +66,10 @@ const fileName = (img: ImageMetadata) =>
  */
 export function projectMedia(p: Project): MediaItem[] {
   const list: (Omit<MediaItem, 'seq' | 'rank'> & { seqField?: string | null })[] = [];
-  if (p.data.cover) list.push({ kind: 'image', src: p.data.cover, alt: p.data.title, youtube: null, vertical: false });
+  // Skip the cover when it is also a video poster (video-only projects): the video tile represents it.
+  const posterSrcs = new Set(p.data.videos.flatMap((v) => (v.poster ? [v.poster.src] : [])));
+  if (p.data.cover && !posterSrcs.has(p.data.cover.src))
+    list.push({ kind: 'image', src: p.data.cover, alt: p.data.title, youtube: null, vertical: false });
   for (const g of p.data.gallery)
     list.push({ kind: 'image', src: g.image, alt: g.alt || p.data.title, youtube: null, vertical: false, seqField: g.seq });
   for (const v of p.data.videos)
@@ -79,6 +82,13 @@ export function projectMedia(p: Project): MediaItem[] {
       ? { ...rest, rank: parsed.rank, seq: `${parsed.rank}${parsed.branch}`, i }
       : { ...rest, rank: Number.MAX_SAFE_INTEGER, seq: '', i };
   });
+  // The cover has no Position field: if its file-name number collides with another item, it goes first.
+  const cover = list[0] && !('seqField' in list[0]) ? items[0] : null;
+  if (cover && items.some((m) => m !== cover && m.rank === cover.rank)) {
+    const min = Math.min(...items.filter((m) => m !== cover).map((m) => m.rank));
+    cover.rank = Math.max(0, min - 1);
+    cover.seq = String(cover.rank);
+  }
   // Items without any sequence keep list order after the numbered ones.
   items.sort((a, b) => a.rank - b.rank || a.seq.localeCompare(b.seq) || a.i - b.i);
   let last = 0;

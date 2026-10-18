@@ -7,31 +7,44 @@ discipline:
 client: Personal Work / Experimental
 cover: ../../assets/projects/abstract/01-11-p1450442.webp
 gallery:
-  - image: ../../assets/projects/abstract/02-13-p1450333.webp
+  - seq: '2'
+    image: ../../assets/projects/abstract/02-13-p1450333.webp
     alt: ''
-  - image: ../../assets/projects/abstract/03-17-p1450251.webp
+  - seq: '3'
+    image: ../../assets/projects/abstract/03-17-p1450251.webp
     alt: ''
-  - image: ../../assets/projects/abstract/04-18-p1450160.webp
+  - seq: '4'
+    image: ../../assets/projects/abstract/04-18-p1450160.webp
     alt: ''
-  - image: ../../assets/projects/abstract/05-19-p1450142.webp
+  - seq: '5'
+    image: ../../assets/projects/abstract/05-19-p1450142.webp
     alt: ''
-  - image: ../../assets/projects/abstract/06-20-p1450130.webp
+  - seq: '6'
+    image: ../../assets/projects/abstract/06-20-p1450130.webp
     alt: ''
-  - image: ../../assets/projects/abstract/07-3-dsc0238.webp
+  - seq: '7'
+    image: ../../assets/projects/abstract/07-3-dsc0238.webp
     alt: ''
-  - image: ../../assets/projects/abstract/08-4-dsc0233.webp
+  - seq: '8'
+    image: ../../assets/projects/abstract/08-4-dsc0233.webp
     alt: ''
-  - image: ../../assets/projects/abstract/09-6-dsc0227.webp
+  - seq: '9'
+    image: ../../assets/projects/abstract/09-6-dsc0227.webp
     alt: ''
-  - image: ../../assets/projects/abstract/10-7-dsc0221.webp
+  - seq: '10'
+    image: ../../assets/projects/abstract/10-7-dsc0221.webp
     alt: ''
-  - image: ../../assets/projects/abstract/11-8-dsc0214.webp
+  - seq: '11'
+    image: ../../assets/projects/abstract/11-8-dsc0214.webp
     alt: ''
-  - image: ../../assets/projects/abstract/12-9-dsc0203.webp
+  - seq: '12'
+    image: ../../assets/projects/abstract/12-9-dsc0203.webp
     alt: ''
-  - image: ../../assets/projects/abstract/13-14-dsc0146.webp
+  - seq: '13'
+    image: ../../assets/projects/abstract/13-14-dsc0146.webp
     alt: ''
-  - image: ../../assets/projects/abstract/14-22-dsc0045.webp
+  - seq: '14'
+    image: ../../assets/projects/abstract/14-22-dsc0045.webp
     alt: ''
 videos: []
 credits: "Daniel Neto · Photography · Experimental Editing"

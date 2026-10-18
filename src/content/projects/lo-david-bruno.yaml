@@ -7,22 +7,30 @@ discipline:
 client: Lo Siento
 cover: ../../assets/projects/lo-david-bruno/01-8-dsc0272.webp
 gallery:
-  - image: ../../assets/projects/lo-david-bruno/02-1-dsc0105.webp
+  - seq: '2'
+    image: ../../assets/projects/lo-david-bruno/02-1-dsc0105.webp
     alt: ''
-  - image: ../../assets/projects/lo-david-bruno/03-2-dsc0126.webp
+  - seq: '3'
+    image: ../../assets/projects/lo-david-bruno/03-2-dsc0126.webp
     alt: ''
-  - image: ../../assets/projects/lo-david-bruno/04-3-dsc0183.webp
+  - seq: '4'
+    image: ../../assets/projects/lo-david-bruno/04-3-dsc0183.webp
     alt: ''
-  - image: ../../assets/projects/lo-david-bruno/05-4-dsc0202.webp
+  - seq: '5'
+    image: ../../assets/projects/lo-david-bruno/05-4-dsc0202.webp
     alt: ''
-  - image: ../../assets/projects/lo-david-bruno/06-5-dsc0207.webp
+  - seq: '6'
+    image: ../../assets/projects/lo-david-bruno/06-5-dsc0207.webp
     alt: ''
-  - image: ../../assets/projects/lo-david-bruno/07-6-dsc0213.webp
+  - seq: '7'
+    image: ../../assets/projects/lo-david-bruno/07-6-dsc0213.webp
     alt: ''
-  - image: ../../assets/projects/lo-david-bruno/08-7-dsc0264.webp
+  - seq: '8'
+    image: ../../assets/projects/lo-david-bruno/08-7-dsc0264.webp
     alt: ''
 videos:
-  - youtube: null
+  - seq: '9'
+    youtube: null
     title: david bruno vhs 1
     vertical: false
     poster: ../../assets/projects/lo-david-bruno/01-david-bruno-vhs-1.jpg

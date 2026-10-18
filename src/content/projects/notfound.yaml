@@ -7,19 +7,26 @@ discipline:
 client: Collaboration
 cover: ../../assets/projects/notfound/01-1-p1370766.webp
 gallery:
-  - image: ../../assets/projects/notfound/02-2-p1370725.webp
+  - seq: '2'
+    image: ../../assets/projects/notfound/02-2-p1370725.webp
     alt: ''
-  - image: ../../assets/projects/notfound/03-3-p1370723.webp
+  - seq: '3'
+    image: ../../assets/projects/notfound/03-3-p1370723.webp
     alt: ''
-  - image: ../../assets/projects/notfound/04-4-p1370722.webp
+  - seq: '4'
+    image: ../../assets/projects/notfound/04-4-p1370722.webp
     alt: ''
-  - image: ../../assets/projects/notfound/05-5-p1370702.webp
+  - seq: '5'
+    image: ../../assets/projects/notfound/05-5-p1370702.webp
     alt: ''
-  - image: ../../assets/projects/notfound/06-6-p1370697.webp
+  - seq: '6'
+    image: ../../assets/projects/notfound/06-6-p1370697.webp
     alt: ''
-  - image: ../../assets/projects/notfound/07-7-p1370659.webp
+  - seq: '7'
+    image: ../../assets/projects/notfound/07-7-p1370659.webp
     alt: ''
-  - image: ../../assets/projects/notfound/08-8-p1370657.webp
+  - seq: '8'
+    image: ../../assets/projects/notfound/08-8-p1370657.webp
     alt: ''
 videos: []
 credits: "Collaborative Concept · Photography · Editing"

@@ -204,6 +204,7 @@ const projectInfo = groups.map(({ p, media }) => ({
     transition: opacity var(--dur-fast) var(--ease), visibility 0s linear var(--dur);
   }
   .cv-panel.is-open { visibility: visible; pointer-events: auto; transition: opacity var(--dur-fast) var(--ease); }
+  @media (max-width: 767px) { :global(html:has(.cv-panel.is-open) [data-toggles]) { opacity: 0; pointer-events: none; } }
   .cv-panel.is-away { opacity: 0; pointer-events: none; }
   .cp-clip {
     display: flex; width: 100%; min-height: 0; clip-path: inset(0 100% 0 0);

@@ -7,26 +7,36 @@ discipline:
 client: Traz os Monstros
 cover: ../../assets/projects/traz-merch/01-9-img-3674.webp
 gallery:
-  - image: ../../assets/projects/traz-merch/02-10-img-3682.webp
+  - seq: '2'
+    image: ../../assets/projects/traz-merch/02-10-img-3682.webp
     alt: ''
-  - image: ../../assets/projects/traz-merch/03-18-img-3740.webp
+  - seq: '3'
+    image: ../../assets/projects/traz-merch/03-18-img-3740.webp
     alt: ''
-  - image: ../../assets/projects/traz-merch/04-11-p1500533.webp
+  - seq: '4'
+    image: ../../assets/projects/traz-merch/04-11-p1500533.webp
     alt: ''
-  - image: ../../assets/projects/traz-merch/05-12-p1500549.webp
+  - seq: '5'
+    image: ../../assets/projects/traz-merch/05-12-p1500549.webp
     alt: ''
-  - image: ../../assets/projects/traz-merch/06-13-img-3714.webp
+  - seq: '6'
+    image: ../../assets/projects/traz-merch/06-13-img-3714.webp
     alt: ''
-  - image: ../../assets/projects/traz-merch/07-14-img-3728.webp
+  - seq: '7'
+    image: ../../assets/projects/traz-merch/07-14-img-3728.webp
     alt: ''
-  - image: ../../assets/projects/traz-merch/08-15-img-3731.webp
+  - seq: '8'
+    image: ../../assets/projects/traz-merch/08-15-img-3731.webp
     alt: ''
-  - image: ../../assets/projects/traz-merch/09-16-img-3734.webp
+  - seq: '9'
+    image: ../../assets/projects/traz-merch/09-16-img-3734.webp
     alt: ''
-  - image: ../../assets/projects/traz-merch/10-17-img-3736.webp
+  - seq: '10'
+    image: ../../assets/projects/traz-merch/10-17-img-3736.webp
     alt: ''
 videos:
-  - youtube: null
+  - seq: '11'
+    youtube: null
     title: tome 01
     vertical: true
     poster: ../../assets/projects/traz-merch/tome-01.jpg

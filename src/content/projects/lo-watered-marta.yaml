@@ -7,30 +7,41 @@ discipline:
 client: Lo Siento
 cover: ../../assets/projects/lo-watered-marta/15-2-dsc0240.webp
 gallery:
-  - image: ../../assets/projects/lo-watered-marta/16-5-dsc0230.webp
+  - seq: '2'
+    image: ../../assets/projects/lo-watered-marta/16-5-dsc0230.webp
     alt: ''
-  - image: ../../assets/projects/lo-watered-marta/17-10-dsc0199.webp
+  - seq: '3'
+    image: ../../assets/projects/lo-watered-marta/17-10-dsc0199.webp
     alt: ''
-  - image: ../../assets/projects/lo-watered-marta/18-11-dsc0197.webp
+  - seq: '4'
+    image: ../../assets/projects/lo-watered-marta/18-11-dsc0197.webp
     alt: ''
-  - image: ../../assets/projects/lo-watered-marta/19-12-dsc0192.webp
+  - seq: '5'
+    image: ../../assets/projects/lo-watered-marta/19-12-dsc0192.webp
     alt: ''
-  - image: ../../assets/projects/lo-watered-marta/20-13-dsc0190.webp
+  - seq: '6'
+    image: ../../assets/projects/lo-watered-marta/20-13-dsc0190.webp
     alt: ''
-  - image: ../../assets/projects/lo-watered-marta/21-16-dsc0136.webp
+  - seq: '7'
+    image: ../../assets/projects/lo-watered-marta/21-16-dsc0136.webp
     alt: ''
-  - image: ../../assets/projects/lo-watered-marta/22-17-dsc0079.webp
+  - seq: '8'
+    image: ../../assets/projects/lo-watered-marta/22-17-dsc0079.webp
     alt: ''
-  - image: ../../assets/projects/lo-watered-marta/23-18-dsc0074.webp
+  - seq: '9'
+    image: ../../assets/projects/lo-watered-marta/23-18-dsc0074.webp
     alt: ''
-  - image: ../../assets/projects/lo-watered-marta/24-19-dsc0070.webp
+  - seq: '10'
+    image: ../../assets/projects/lo-watered-marta/24-19-dsc0070.webp
     alt: ''
 videos:
-  - youtube: null
+  - seq: '11'
+    youtube: null
     title: WhatsApp Video 2026-03-10 at 6.14.56 PM
     vertical: true
     poster: ../../assets/projects/lo-watered-marta/00-whatsapp-video-2026-03-10-at-6-14-56-pm.jpg
-  - youtube: null
+  - seq: '12'
+    youtube: null
     title: WhatsApp Video 2026-03-10 at 6.16.28 PM
     vertical: true
     poster: ../../assets/projects/lo-watered-marta/01-whatsapp-video-2026-03-10-at-6-16-28-pm.jpg

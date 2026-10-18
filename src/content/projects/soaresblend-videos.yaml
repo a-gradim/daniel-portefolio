@@ -8,7 +8,8 @@ client: Brand content
 cover: ../../assets/projects/soaresblend-videos/kike-01.jpg
 gallery: []
 videos:
-  - youtube: null
+  - seq: '1'
+    youtube: null
     title: final version kike 01_1 (1)
     vertical: true
     poster: ../../assets/projects/soaresblend-videos/kike-01.jpg

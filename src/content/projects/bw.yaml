@@ -7,15 +7,20 @@ discipline:
 client: Personal Work
 cover: ../../assets/projects/bw/01-1-p1480458.webp
 gallery:
-  - image: ../../assets/projects/bw/02-2-p1480439.webp
+  - seq: '2'
+    image: ../../assets/projects/bw/02-2-p1480439.webp
     alt: ''
-  - image: ../../assets/projects/bw/03-3-p1480423.webp
+  - seq: '3'
+    image: ../../assets/projects/bw/03-3-p1480423.webp
     alt: ''
-  - image: ../../assets/projects/bw/04-4-p1480407.webp
+  - seq: '4'
+    image: ../../assets/projects/bw/04-4-p1480407.webp
     alt: ''
-  - image: ../../assets/projects/bw/05-5-p1480393.webp
+  - seq: '5'
+    image: ../../assets/projects/bw/05-5-p1480393.webp
     alt: ''
-  - image: ../../assets/projects/bw/06-6-p1480386.webp
+  - seq: '6'
+    image: ../../assets/projects/bw/06-6-p1480386.webp
     alt: ''
 videos: []
 credits: "Daniel Neto · Photography · Image Editing"
