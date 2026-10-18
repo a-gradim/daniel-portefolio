@@ -1,18 +1,34 @@
 ---
-// Base layout (stub from phase 0 — A3 owns and extends it; keep the theme bootstrap script).
+import { ClientRouter, fade } from 'astro:transitions';
 import '../styles/tokens.css';
+import '../styles/global.css';
+import Toggles from '../components/ui/Toggles.astro';
 import { getSettings } from '../lib/content';
-import type { Locale } from '../i18n/ui';
+import { localePath, useT, type Locale } from '../i18n/ui';
 
 interface Props {
   locale: Locale;
   title?: string;
   description?: string;
-  image?: string;
+  image?: ImageMetadata;
+  /** No padding, no scroll: used by the home canvas. */
+  fullBleed?: boolean;
+  /** Override language-toggle target (404). */
+  altHref?: string;
 }
-const { locale, title, description } = Astro.props;
+const { locale, title, description, fullBleed = false, altHref } = Astro.props;
 const settings = await getSettings();
+const t = useT(locale);
 const pageTitle = title ? `${title} — ${settings.name}` : settings.name;
+
+const trim = (p: string) => (p.length > 1 ? p.replace(/\/$/, '') : p);
+const current = trim(Astro.url.pathname);
+const home = trim(localePath(locale, '/'));
+const nav = [
+  { key: 'nav.work', href: localePath(locale, '/'), active: current === home || current.startsWith(trim(localePath(locale, '/work'))) },
+  { key: 'nav.index', href: localePath(locale, '/projects'), active: current === trim(localePath(locale, '/projects')) },
+  { key: 'nav.about', href: localePath(locale, '/about'), active: current === trim(localePath(locale, '/about')) },
+] as const;
 ---
 <!doctype html>
 <html lang={locale === 'pt' ? 'pt-PT' : 'en'} data-theme={settings.defaultTheme}>
@@ -21,14 +37,111 @@ const pageTitle = title ? `${title} — ${settings.name}` : settings.name;
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
+    {/* TODO(merge): <Seo title={pageTitle} description={description} image={image} locale={locale} /> from ../components/seo/Seo.astro */}
     <script is:inline>
-      try {
-        const t = localStorage.getItem('theme');
-        if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
-      } catch {}
+      (function () {
+        function apply() {
+          try {
+            var t = localStorage.getItem('theme');
+            if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
+          } catch (e) {}
+        }
+        apply();
+        // The router swaps <html> attributes with the new page defaults: re-apply the stored theme.
+        document.addEventListener('astro:after-swap', apply);
+      })();
     </script>
+    <ClientRouter />
   </head>
-  <body>
-    <slot />
+  <body class:list={{ full: fullBleed }}>
+    <header class="site-header label">
+      <a class="name" href={localePath(locale, '/')} aria-label={`${settings.name} — ${t('nav.work')}`}>{settings.name}</a>
+      <nav aria-label={t('a11y.nav')}>
+        <ul>
+          {nav.map((n) => (
+            <li>
+              <a href={n.href} aria-current={n.active ? 'page' : undefined}>{t(n.key)}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+    <div class="content" transition:animate={fade({ duration: '0.3s' })}>
+      <slot />
+    </div>
+    <Toggles locale={locale} altHref={altHref} />
   </body>
 </html>
+
+<style is:global>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: var(--z-header);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    height: calc(var(--header-h) + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) max(var(--gutter), env(safe-area-inset-right)) 0
+      max(var(--gutter), env(safe-area-inset-left));
+    font-size: var(--fs-xs);
+    background: var(--bg);
+  }
+  body.full .site-header {
+    background: transparent;
+    color: #fff;
+    mix-blend-mode: difference;
+  }
+  .site-header .name {
+    white-space: nowrap;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    transition: opacity var(--dur-fast) var(--ease);
+  }
+  .site-header .name:hover {
+    opacity: 0.6;
+  }
+  .site-header ul {
+    display: flex;
+    gap: var(--space-1);
+    margin-right: calc(var(--space-2) * -1);
+  }
+  .site-header nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--space-2);
+    color: var(--muted);
+    transition: color var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
+  }
+  body.full .site-header nav a {
+    color: inherit;
+    opacity: 0.55;
+  }
+  .site-header nav a:hover,
+  .site-header nav a[aria-current='page'] {
+    color: var(--ink);
+  }
+  body.full .site-header nav a:hover,
+  body.full .site-header nav a[aria-current='page'] {
+    color: inherit;
+    opacity: 1;
+  }
+  @media (min-width: 768px) {
+    .site-header {
+      font-size: var(--fs-sm);
+    }
+    .site-header nav a {
+      padding: 0 var(--space-3);
+    }
+  }
+  .content {
+    min-height: 100dvh;
+  }
+  body.full .content {
+    height: 100dvh;
+    min-height: 0;
+  }
+</style>

@@ -1,0 +1,68 @@
+---
+// Fixed bottom-right corner: language (EN/PT) + theme (dark/light).
+import { switchLocalePath, useT, type Locale } from '../../i18n/ui';
+interface Props {
+  locale: Locale;
+  /** Override the language switch target (e.g. 404, which has no /pt twin). */
+  altHref?: string;
+}
+const { locale, altHref } = Astro.props;
+const t = useT(locale);
+const other: Locale = locale === 'en' ? 'pt' : 'en';
+const href = altHref ?? switchLocalePath(Astro.url.pathname, other);
+const otherLang = other === 'pt' ? 'pt-PT' : 'en';
+---
+<div class="toggles label" data-toggles>
+  <a class="tg" href={href} hreflang={otherLang} lang={otherLang} aria-label={t('toggle.lang')} title={t('toggle.lang')}>{other.toUpperCase()}</a>
+  <button class="tg" type="button" data-theme-toggle aria-label={t('toggle.theme')} title={t('toggle.theme')}>
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+      <circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.2" />
+      <path d="M7 1a6 6 0 0 1 0 12z" fill="currentColor" />
+    </svg>
+  </button>
+</div>
+
+<style>
+  .toggles {
+    position: fixed;
+    right: max(var(--gutter), env(safe-area-inset-right));
+    bottom: max(var(--space-2), env(safe-area-inset-bottom));
+    z-index: var(--z-header);
+    display: flex;
+    align-items: center;
+    /* Stays legible over images and on both themes. */
+    color: #fff;
+    mix-blend-mode: difference;
+  }
+  .tg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 var(--space-2);
+    color: inherit;
+    transition: opacity var(--dur-fast) var(--ease);
+  }
+  .tg:hover {
+    opacity: 0.6;
+  }
+</style>
+
+<script>
+  function bind() {
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const root = document.documentElement;
+        const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+        root.dataset.theme = next;
+        try {
+          localStorage.setItem('theme', next);
+        } catch {}
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', bind);
+</script>

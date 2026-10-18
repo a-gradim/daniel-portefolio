@@ -1,0 +1,340 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { getProjects, getSections, pick, projectImages, youtubeId } from '../lib/content';
+import { localePath, useT, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  slug: string;
+}
+const { locale, slug } = Astro.props;
+const t = useT(locale);
+
+const projects = await getProjects();
+const idx = projects.findIndex((p) => p.id === slug);
+if (idx < 0) throw new Error(`Unknown project: ${slug}`);
+const project = projects[idx];
+const d = project.data;
+const sections = await getSections();
+const clientLabel = d.client || sections.find((s) => s.id === d.section)?.data.title || '';
+const discipline = pick(d.discipline, locale);
+const paragraphs = pick(d.body, locale)
+  .split(/\n\s*\n/)
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+// Cover + gallery (video posters are used by the video facades below).
+const posterSrcs = new Set(d.videos.map((v) => v.poster?.src).filter(Boolean));
+const seen = new Set<string>();
+const images = projectImages(project).filter((img) => {
+  if (posterSrcs.has(img.src.src) || seen.has(img.src.src)) return false;
+  seen.add(img.src.src);
+  return true;
+});
+
+const videos = d.videos
+  .map((v) => ({ ...v, id: youtubeId(v.youtube) }))
+  .filter((v): v is typeof v & { id: string } => !!v.id);
+
+const prev = projects.length > 1 ? projects[(idx - 1 + projects.length) % projects.length] : null;
+const next = projects.length > 1 ? projects[(idx + 1) % projects.length] : null;
+
+const meta = [
+  { label: t('index.section'), value: clientLabel },
+  { label: t('index.discipline'), value: discipline },
+  { label: t('index.year'), value: d.year ? String(d.year) : '' },
+  { label: t('project.credits'), value: d.credits.trim(), wide: true },
+].filter((m) => m.value);
+
+const description = paragraphs[0]?.slice(0, 160) || [discipline, clientLabel].filter(Boolean).join(' — ') || undefined;
+---
+<Base locale={locale} title={d.title} description={description} image={d.cover ?? images[0]?.src}>
+  <main class="page project">
+    <a class="back label muted" href={localePath(locale, '/projects')}>&larr; {t('project.back')}</a>
+
+    <h1 class="page-title">{d.title}</h1>
+
+    {meta.length > 0 && (
+      <dl class="meta">
+        {meta.map((m) => (
+          <div class:list={['meta-item', { wide: m.wide }]}>
+            <dt class="label muted">{m.label}</dt>
+            <dd class:list={{ credits: m.wide }}>{m.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+
+    {paragraphs.length > 0 && (
+      <div class="body">
+        {paragraphs.map((para) => (
+          <p>{para}</p>
+        ))}
+      </div>
+    )}
+
+    {images.length > 0 && (
+      <section class="gallery" aria-label={t('project.gallery')}>
+        {images.map((img, i) => {
+          const landscape = img.src.width / img.src.height >= 1.1;
+          return (
+            <figure class:list={['shot', { wide: landscape }]} style={`--ar:${img.src.width}/${img.src.height}`}>
+              <Image
+                src={img.src}
+                alt={img.alt}
+                widths={[480, 800, 1200, 1800]}
+                sizes={landscape ? '(min-width: 1800px) 1736px, calc(100vw - 2 * var(--gutter))' : '(min-width: 768px) 50vw, 100vw'}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                fetchpriority={i === 0 ? 'high' : 'auto'}
+                decoding="async"
+              />
+            </figure>
+          );
+        })}
+      </section>
+    )}
+
+    {videos.length > 0 && (
+      <section class="videos" aria-label={t('project.videos')}>
+        {videos.map((v) => (
+          <figure class:list={['video', { vertical: v.vertical }]}>
+            <div class="yt">
+            <button
+              type="button"
+              class="poster"
+              data-yt={v.id}
+              data-title={v.title || d.title}
+              aria-label={`${t('project.play')}${v.title ? ': ' + v.title : ''}`}
+            >
+              {v.poster ? (
+                <Image src={v.poster} alt="" widths={[480, 800, 1200]} sizes={v.vertical ? '(min-width: 768px) 360px, 100vw' : '100vw'} loading="lazy" decoding="async" />
+              ) : (
+                <img src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`} alt="" loading="lazy" decoding="async" />
+              )}
+              <span class="play" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M5 2.5v15l13-7.5z" fill="currentColor" /></svg>
+              </span>
+            </button>
+            </div>
+            {v.title && <figcaption class="label muted">{v.title}</figcaption>}
+          </figure>
+        ))}
+      </section>
+    )}
+
+    {(prev || next) && (
+      <nav class="pn" aria-label={`${t('project.prev')} / ${t('project.next')}`}>
+        {prev && (
+          <a class="pn-link prev" href={localePath(locale, `/work/${prev.id}`)} rel="prev">
+            <span class="label muted">&larr; {t('project.prev')}</span>
+            <span class="pn-title">{prev.data.title}</span>
+          </a>
+        )}
+        {next && (
+          <a class="pn-link next" href={localePath(locale, `/work/${next.id}`)} rel="next">
+            <span class="label muted">{t('project.next')} &rarr;</span>
+            <span class="pn-title">{next.data.title}</span>
+          </a>
+        )}
+      </nav>
+    )}
+  </main>
+</Base>
+
+<style>
+  .back {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-bottom: var(--space-3);
+    transition: color var(--dur-fast) var(--ease);
+  }
+  .back:hover {
+    color: var(--ink);
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3) var(--space-4);
+    margin-top: var(--space-5);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--hair);
+  }
+  .meta-item.wide {
+    grid-column: 1 / -1;
+  }
+  .meta dd {
+    font-size: var(--fs-sm);
+    margin-top: var(--space-1);
+  }
+  .credits {
+    white-space: pre-line;
+  }
+  .body {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 62ch;
+    margin-top: var(--space-5);
+    font-size: var(--fs-md);
+    line-height: 1.55;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+    align-items: start;
+  }
+  .shot {
+    background: var(--surface);
+    aspect-ratio: var(--ar);
+    overflow: hidden;
+  }
+  .shot :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .videos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+  .video {
+    flex: 1 1 100%;
+  }
+  .video.vertical {
+    flex: 0 1 360px;
+    max-width: 100%;
+  }
+  .yt {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .vertical .yt {
+    aspect-ratio: 9 / 16;
+  }
+  .yt :global(img),
+  .yt :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+  }
+  .yt :global(iframe) {
+    position: absolute;
+    inset: 0;
+  }
+  .poster {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .yt .play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: linear-gradient(transparent 55%, rgba(0, 0, 0, 0.35));
+    transition: transform var(--dur) var(--ease);
+  }
+  .yt .play svg {
+    padding: 0;
+    width: 56px;
+    height: 56px;
+    padding: 18px 16px 18px 20px;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  .poster:hover .play {
+    transform: scale(1.05);
+  }
+  figcaption {
+    margin-top: var(--space-2);
+  }
+
+  .pn {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--hair);
+  }
+  .pn-link {
+    display: grid;
+    gap: var(--space-1);
+    min-height: 44px;
+    transition: opacity var(--dur-fast) var(--ease);
+  }
+  .pn-link.next {
+    grid-column: 2;
+    text-align: right;
+  }
+  .pn-link:only-child.prev {
+    grid-column: 1;
+  }
+  .pn-title {
+    font-size: var(--fs-lg);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .pn-link:hover {
+    opacity: 0.6;
+  }
+
+  @media (min-width: 768px) {
+    .meta {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .meta-item.wide {
+      grid-column: 1 / -1;
+    }
+    .gallery {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    .shot.wide {
+      grid-column: 1 / -1;
+    }
+    .video.vertical {
+      flex-basis: 360px;
+    }
+    .video:not(.vertical) {
+      flex-basis: calc(50% - var(--space-3));
+    }
+    .video:not(.vertical):only-child {
+      flex-basis: 100%;
+    }
+  }
+</style>
+
+<script>
+  function initYT() {
+    document.querySelectorAll<HTMLButtonElement>('button.poster[data-yt]').forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.yt!;
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
+        iframe.title = btn.dataset.title || 'Video';
+        iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        iframe.allowFullscreen = true;
+        btn.replaceWith(iframe);
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', initYT);
+</script>
