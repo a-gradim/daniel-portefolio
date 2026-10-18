@@ -1,7 +1,28 @@
 ---
 import Base from '../layouts/Base.astro';
+import Canvas from '../components/canvas/Canvas.astro';
+import { getProjects, getSettings } from '../lib/content';
 import type { Locale } from '../i18n/ui';
+
 interface Props { locale: Locale }
 const { locale } = Astro.props;
+const projects = (await getProjects()).filter((p) => p.data.featured);
+const settings = await getSettings();
 ---
-<Base locale={locale}><main>Home (canvas) — TODO</main></Base>
+<Base locale={locale} fullBleed>
+  <main class="home-canvas">
+    <h1 class="sr-only">{settings.name}</h1>
+    <Canvas projects={projects} locale={locale} />
+  </main>
+</Base>
+
+<style is:global>
+  html:has(.home-canvas), html:has(.home-canvas) body { margin: 0; overflow: hidden; overscroll-behavior: none; }
+</style>
+<style>
+  .home-canvas { position: fixed; inset: 0; width: 100%; height: 100dvh; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+</style>
