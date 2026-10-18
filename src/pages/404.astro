@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import { ui } from '../i18n/ui';
+---
+<Base locale="en" title="404" altHref="/pt">
+  <main class="page nf">
+    <p class="label muted">404</p>
+    <h1 class="page-title">{ui.en['404.title']}</h1>
+    <p class="alt muted" lang="pt-PT">{ui.pt['404.title']}</p>
+    <p class="go"><a class="label" href="/">&larr; {ui.en['404.home']}</a> <span class="muted">/</span> <a class="label" href="/pt" lang="pt-PT">{ui.pt['404.home']}</a></p>
+  </main>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    align-content: center;
+    min-height: 100dvh;
+    gap: var(--space-3);
+  }
+  .alt {
+    font-size: var(--fs-lg);
+    letter-spacing: -0.02em;
+  }
+  .go {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  .go a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    border-bottom: 1px solid var(--hair);
+  }
+  .go a:hover {
+    border-color: var(--ink);
+  }
+</style>

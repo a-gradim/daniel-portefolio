@@ -1,0 +1,436 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { getProjects, getSections, pick, projectImages } from '../lib/content';
+import { localePath, useT, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useT(locale);
+
+const [projects, sections] = await Promise.all([getProjects(), getSections()]);
+const sectionTitle = new Map(sections.map((s) => [s.id, s.data.title]));
+
+const rows = projects.map((p, i) => {
+  const imgs = projectImages(p);
+  return {
+    id: p.id,
+    i,
+    title: p.data.title,
+    client: p.data.client || sectionTitle.get(p.data.section ?? '') || '',
+    discipline: pick(p.data.discipline, locale),
+    year: p.data.year ?? null,
+    image: imgs[0] ?? null,
+    href: localePath(locale, `/work/${p.id}`),
+  };
+});
+
+const disciplines = [...new Set(rows.map((r) => r.discipline).filter(Boolean))];
+const years = [...new Set(rows.map((r) => r.year).filter((y): y is number => y != null))].sort((a, b) => b - a);
+
+const cols = [
+  { key: 'title', label: t('index.project') },
+  { key: 'client', label: t('index.section') },
+  { key: 'discipline', label: t('index.discipline') },
+  { key: 'year', label: t('index.year') },
+] as const;
+---
+<Base locale={locale} title={t('nav.index')}>
+  <main class="page index" data-index>
+    <h1 class="visually-hidden">{t('nav.index')}</h1>
+
+    <div class="filters label" role="group" aria-label={t('index.filters')}>
+      {disciplines.length > 0 && (
+        <div class="chips" data-group="discipline">
+          <span class="muted group-label">{t('index.discipline')}</span>
+          <button type="button" class="chip" data-value="" aria-pressed="true">{t('index.all')}</button>
+          {disciplines.map((d) => (
+            <button type="button" class="chip" data-value={d} aria-pressed="false">{d}</button>
+          ))}
+        </div>
+      )}
+      {years.length > 0 && (
+        <div class="chips" data-group="year">
+          <span class="muted group-label">{t('index.year')}</span>
+          <button type="button" class="chip" data-value="" aria-pressed="true">{t('index.all')}</button>
+          {years.map((y) => (
+            <button type="button" class="chip" data-value={String(y)} aria-pressed="false">{y}</button>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <div class="table" role="table" aria-label={t('nav.index')}>
+      <div class="row head label muted" role="row">
+        <span class="thumb-spacer" aria-hidden="true"></span>
+        {cols.map((c) => (
+          <button type="button" class={`cell c-${c.key}`} role="columnheader" data-sort={c.key} aria-sort="none">
+            {c.label}<span class="arrow" aria-hidden="true"></span>
+          </button>
+        ))}
+      </div>
+
+      <ul class="list" data-list>
+        {rows.map((r) => (
+          <li
+            class="item"
+            data-discipline={r.discipline}
+            data-year={r.year ?? ''}
+            data-i={r.i}
+            data-title={r.title}
+            data-client={r.client}
+          >
+            <a class="row" href={r.href} data-preview={r.image ? r.id : undefined}>
+              {r.image ? (
+                <Image class="thumb" src={r.image.src} alt="" width={160} loading="lazy" decoding="async" />
+              ) : (
+                <span class="thumb thumb-empty" aria-hidden="true"></span>
+              )}
+              <span class="cell c-title">{r.title}</span>
+              <span class="cell c-client muted">{r.client}</span>
+              <span class="cell c-discipline muted">{r.discipline}</span>
+              <span class="cell c-year muted">{r.year ?? ''}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="empty label muted" data-empty hidden>{t('index.empty')}</p>
+    </div>
+
+    <div class="preview" data-preview-box aria-hidden="true">
+      {rows.filter((r) => r.image).map((r) => (
+        <Image
+          class="pimg"
+          data-for={r.id}
+          src={r.image!.src}
+          alt=""
+          width={480}
+          loading="lazy"
+          decoding="async"
+        />
+      ))}
+    </div>
+  </main>
+</Base>
+
+<style>
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-2);
+  }
+  .group-label {
+    min-width: 7ch;
+    margin-right: var(--space-2);
+  }
+  .chip {
+    font-family: var(--font-label);
+    font-size: var(--fs-xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: var(--case-label);
+    min-height: 44px;
+    padding: 0 var(--space-2);
+    color: var(--muted);
+    transition: color var(--dur-fast) var(--ease);
+  }
+  .chip:hover,
+  .chip[aria-pressed='true'] {
+    color: var(--ink);
+  }
+  .chip[aria-pressed='true'] {
+    text-decoration: underline;
+    text-underline-offset: 0.35em;
+    text-decoration-thickness: 1px;
+  }
+
+  .table {
+    border-top: 1px solid var(--hair);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    grid-template-areas:
+      'thumb title year'
+      'thumb meta year';
+    column-gap: var(--space-3);
+    align-items: center;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--hair);
+  }
+  .head {
+    display: none;
+  }
+  .thumb {
+    grid-area: thumb;
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    background: var(--surface);
+  }
+  .c-title {
+    grid-area: title;
+    font-size: var(--fs-md);
+    line-height: 1.2;
+  }
+  .c-client,
+  .c-discipline {
+    font-size: var(--fs-sm);
+  }
+  .c-client {
+    grid-area: meta;
+  }
+  .c-discipline {
+    display: none;
+  }
+  .c-year {
+    grid-area: year;
+    font-family: var(--font-label);
+    font-size: var(--fs-xs);
+    letter-spacing: var(--tracking-label);
+    font-variant-numeric: tabular-nums;
+  }
+  .item[hidden] {
+    display: none;
+  }
+  .empty {
+    padding: var(--space-4) 0;
+  }
+
+  .preview {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .filters {
+      flex-direction: row;
+      gap: var(--space-5);
+    }
+    .row {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) minmax(0, 2fr) 5rem;
+      grid-template-areas: 'title meta disc year';
+      padding: var(--space-3) 0;
+      transition: opacity var(--dur-fast) var(--ease);
+    }
+    .thumb,
+    .thumb-spacer {
+      display: none;
+    }
+    .c-title {
+      font-size: var(--fs-lg);
+      letter-spacing: -0.02em;
+    }
+    .c-discipline {
+      display: block;
+      grid-area: disc;
+    }
+    .c-year {
+      text-align: right;
+    }
+    .head {
+      display: grid;
+      grid-template-areas: 'title meta disc year';
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid var(--hair);
+    }
+    .head .cell {
+      font: inherit;
+      text-align: left;
+      font-size: var(--fs-xs);
+      min-height: 32px;
+      text-transform: var(--case-label);
+      color: var(--muted);
+    }
+    .head .c-year {
+      text-align: right;
+    }
+    .head .cell:hover,
+    .head .cell[aria-sort='ascending'],
+    .head .cell[aria-sort='descending'] {
+      color: var(--ink);
+    }
+    .arrow::after {
+      content: '';
+    }
+    .cell[aria-sort='ascending'] .arrow::after {
+      content: ' \2191';
+    }
+    .cell[aria-sort='descending'] .arrow::after {
+      content: ' \2193';
+    }
+    /* Dim siblings while hovering the list. */
+    .list:has(.row:hover) .row:not(:hover) {
+      opacity: 0.35;
+    }
+  }
+
+  /* Floating preview only for real pointers. */
+  @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+    .preview {
+      display: block;
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: min(30vw, 480px);
+      pointer-events: none;
+      z-index: var(--z-overlay);
+      opacity: 0;
+      transition: opacity var(--dur-fast) var(--ease);
+      will-change: transform;
+    }
+    .preview.on {
+      opacity: 1;
+    }
+    .pimg {
+      display: none;
+      width: 100%;
+      height: auto;
+      background: var(--surface);
+    }
+    .pimg.on {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  function initIndex() {
+    const root = document.querySelector<HTMLElement>('[data-index]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '1';
+
+    const list = root.querySelector<HTMLElement>('[data-list]')!;
+    const items = [...list.querySelectorAll<HTMLElement>('.item')];
+    const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+    const state: Record<string, string> = { discipline: '', year: '' };
+
+    // Filters
+    const apply = () => {
+      let shown = 0;
+      for (const li of items) {
+        const ok =
+          (!state.discipline || li.dataset.discipline === state.discipline) &&
+          (!state.year || li.dataset.year === state.year);
+        li.hidden = !ok;
+        if (ok) shown++;
+      }
+      empty.hidden = shown > 0;
+    };
+    root.querySelectorAll<HTMLElement>('.chips').forEach((group) => {
+      const key = group.dataset.group!;
+      group.addEventListener('click', (e) => {
+        const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.chip');
+        if (!btn) return;
+        state[key] = btn.dataset.value ?? '';
+        group.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c === btn)));
+        apply();
+      });
+    });
+
+    // Sorting
+    let sortKey = '';
+    let dir = 1;
+    const heads = root.querySelectorAll<HTMLElement>('[data-sort]');
+    heads.forEach((h) =>
+      h.addEventListener('click', () => {
+        const key = h.dataset.sort!;
+        if (sortKey === key) dir = -dir;
+        else {
+          sortKey = key;
+          dir = key === 'year' ? -1 : 1;
+        }
+        heads.forEach((o) => o.setAttribute('aria-sort', 'none'));
+        h.setAttribute('aria-sort', dir === 1 ? 'ascending' : 'descending');
+        const val = (li: HTMLElement) => li.dataset[key] ?? '';
+        items
+          .slice()
+          .sort((a, b) => {
+            const x = val(a);
+            const y = val(b);
+            const r = key === 'year' ? (Number(x) || 0) - (Number(y) || 0) : x.localeCompare(y);
+            return (r || Number(a.dataset.i) - Number(b.dataset.i)) * dir;
+          })
+          .forEach((li) => list.appendChild(li));
+      }),
+    );
+
+    // Floating hover preview (fine pointers only)
+    const box = root.querySelector<HTMLElement>('[data-preview-box]')!;
+    const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 768px)');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    const imgs = new Map<string, HTMLElement>();
+    box.querySelectorAll<HTMLElement>('[data-for]').forEach((el) => imgs.set(el.dataset.for!, el));
+    let active: HTMLElement | null = null;
+    let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
+
+    const place = (clientX: number, clientY: number) => {
+      const w = box.offsetWidth;
+      const h = box.offsetHeight;
+      const pad = 16;
+      let nx = clientX + 28;
+      let ny = clientY - h / 2;
+      if (nx + w + pad > innerWidth) nx = clientX - w - 28;
+      ny = Math.max(pad, Math.min(ny, innerHeight - h - pad));
+      tx = nx;
+      ty = ny;
+    };
+    const tick = () => {
+      x += (tx - x) * 0.2;
+      y += (ty - y) * 0.2;
+      box.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.5 ? requestAnimationFrame(tick) : 0;
+    };
+    const move = (e: PointerEvent) => {
+      place(e.clientX, e.clientY);
+      if (reduce.matches) {
+        x = tx;
+        y = ty;
+        box.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      } else if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const show = (id: string, e: PointerEvent) => {
+      const img = imgs.get(id);
+      if (!img) return;
+      active?.classList.remove('on');
+      img.classList.add('on');
+      active = img;
+      const first = !box.classList.contains('on');
+      box.classList.add('on');
+      place(e.clientX, e.clientY);
+      if (first) {
+        x = tx;
+        y = ty;
+        box.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      }
+    };
+    const hide = () => {
+      box.classList.remove('on');
+      active?.classList.remove('on');
+      active = null;
+    };
+
+    list.addEventListener('pointerover', (e) => {
+      if (!fine.matches || e.pointerType !== 'mouse') return;
+      const a = (e.target as HTMLElement).closest<HTMLElement>('[data-preview]');
+      if (a) show(a.dataset.preview!, e);
+    });
+    list.addEventListener('pointermove', (e) => {
+      if (!fine.matches || !active) return;
+      move(e);
+    });
+    list.addEventListener('pointerout', (e) => {
+      const to = e.relatedTarget as HTMLElement | null;
+      if (!to || !to.closest?.('[data-preview]')) hide();
+    });
+    list.addEventListener('click', hide);
+  }
+  document.addEventListener('astro:page-load', initIndex);
+</script>

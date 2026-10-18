@@ -1,0 +1,139 @@
+---
+import Base from '../layouts/Base.astro';
+import { getSettings, pick } from '../lib/content';
+import { useT, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useT(locale);
+const s = await getSettings();
+
+const role = pick(s.role, locale);
+const bio = pick(s.bio, locale)
+  .split(/\n\s*\n/)
+  .map((x) => x.trim())
+  .filter(Boolean);
+const availability = pick(s.availability, locale);
+---
+<Base locale={locale} title={t('nav.about')} description={role || undefined}>
+  <main class="page about">
+    <h1 class="page-title">{s.name}</h1>
+    {role && <p class="role">{role}</p>}
+
+    <div class="grid">
+      {bio.length > 0 && (
+        <div class="bio">
+          {bio.map((p) => (
+            <p>{p}</p>
+          ))}
+        </div>
+      )}
+
+      <dl class="facts">
+        {s.skills.length > 0 && (
+          <div class="fact">
+            <dt class="label muted">{t('about.skills')}</dt>
+            <dd>
+              <ul class="skills">
+                {s.skills.map((k) => (
+                  <li>{k}</li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        )}
+        {availability && (
+          <div class="fact">
+            <dt class="label muted">{t('about.availability')}</dt>
+            <dd>{availability}</dd>
+          </div>
+        )}
+        {s.location && (
+          <div class="fact">
+            <dt class="label muted">{t('about.location')}</dt>
+            <dd>{s.location}</dd>
+          </div>
+        )}
+        {s.email && (
+          <div class="fact">
+            <dt class="label muted">{t('nav.contact')}</dt>
+            <dd><a class="link" href={`mailto:${s.email}`}>{s.email}</a></dd>
+          </div>
+        )}
+        {s.socials.length > 0 && (
+          <div class="fact">
+            <dt class="label muted">{t('about.social')}</dt>
+            <dd>
+              <ul class="socials">
+                {s.socials.map((so) => (
+                  <li><a class="link" href={so.url} target="_blank" rel="noopener noreferrer me">{so.label}</a></li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        )}
+      </dl>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .role {
+    margin-top: var(--space-3);
+    max-width: 40ch;
+    font-size: var(--fs-lg);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--muted);
+  }
+  .grid {
+    display: grid;
+    gap: var(--space-5);
+    margin-top: var(--space-6);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--hair);
+  }
+  .bio {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 62ch;
+    line-height: 1.55;
+  }
+  .facts {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+  .fact dd {
+    margin-top: var(--space-1);
+    font-size: var(--fs-sm);
+    max-width: 44ch;
+  }
+  .skills,
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-3);
+  }
+  .link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    border-bottom: 1px solid var(--hair);
+    transition: border-color var(--dur-fast) var(--ease);
+  }
+  .link:hover {
+    border-color: var(--ink);
+  }
+  @media (min-width: 768px) {
+    .grid {
+      grid-template-columns: 3fr 2fr;
+      gap: var(--space-6);
+    }
+    .grid:not(:has(.bio)) {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
