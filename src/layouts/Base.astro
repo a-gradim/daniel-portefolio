@@ -2,6 +2,8 @@
 import { ClientRouter, fade } from 'astro:transitions';
 import '../styles/tokens.css';
 import '../styles/global.css';
+import Seo from '../components/seo/Seo.astro';
+import { pick } from '../lib/content';
 import Toggles from '../components/ui/Toggles.astro';
 import { getSettings } from '../lib/content';
 import { localePath, useT, type Locale } from '../i18n/ui';
@@ -16,7 +18,7 @@ interface Props {
   /** Override language-toggle target (404). */
   altHref?: string;
 }
-const { locale, title, description, fullBleed = false, altHref } = Astro.props;
+const { locale, title, description, image, fullBleed = false, altHref } = Astro.props;
 const settings = await getSettings();
 const t = useT(locale);
 const pageTitle = title ? `${title} — ${settings.name}` : settings.name;
@@ -36,13 +38,15 @@ const nav = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{pageTitle}</title>
-    {description && <meta name="description" content={description} />}
-    {/* TODO(merge): <Seo title={pageTitle} description={description} image={image} locale={locale} /> from ../components/seo/Seo.astro */}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Seo title={pageTitle} description={description || pick(settings.role, locale)} image={image} locale={locale} />
     <script is:inline>
       (function () {
         function apply() {
           try {
-            var t = localStorage.getItem('theme');
+            var q = new URLSearchParams(location.search).get('theme');
+            if (q === 'dark' || q === 'light') localStorage.setItem('theme', q);
+            var t = q || localStorage.getItem('theme');
             if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
           } catch (e) {}
         }

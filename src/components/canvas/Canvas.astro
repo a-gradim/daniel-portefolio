@@ -33,7 +33,7 @@ const { tiles, W, H } = layoutPattern(list.map((i) => i.img.src.height / i.img.s
           style={`left:${tiles[i].x}px;top:${tiles[i].y}px;width:${tiles[i].w}px;height:${tiles[i].h}px`}>
           <a href={it.href} data-title={it.title} data-discipline={it.discipline} draggable="false"
             aria-label={it.discipline ? `${it.title} — ${it.discipline}` : it.title}>
-            <Image src={it.img.src} alt={it.img.alt} width={640} widths={[320, 640]}
+            <Image src={it.img.src} alt={it.img.alt} width={640} widths={[320, 640, 960]}
               sizes={`${tiles[i].w}px`} loading="lazy" decoding="async" draggable="false" />
           </a>
         </div>
