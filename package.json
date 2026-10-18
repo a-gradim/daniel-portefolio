@@ -5,7 +5,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "cms:setup": "astro dev --mode github"
   },
   "type": "module",
   "dependencies": {

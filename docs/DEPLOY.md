@@ -77,7 +77,7 @@ Sem permissão de escrita, o Keystatic não consegue guardar. A app do passo 3 t
 
 - **Node.js:** o build usa Node 22 no GitHub Actions. Na Vercel, se for preciso, define a versão em **Settings → General → Node.js Version**.
 - **Build local:** `npm run build` deve passar antes de publicar alterações de código.
-- **Modo local do Keystatic:** `npm run dev` usa ficheiros locais. Para testar o modo GitHub localmente, corre `npm run build && npm run preview` com as 4 variáveis num ficheiro `.env`.
+- **Modo local do Keystatic:** `npm run dev` usa ficheiros locais. Para criar a GitHub App (uma vez), corre `npm run cms:setup`, abre http://127.0.0.1:4321/keystatic e segue o assistente: ele cria o `.env` com as 4 variáveis, que depois copias para a Vercel.
 
 ### Problema conhecido: instalação falha com ERESOLVE
 

@@ -18,7 +18,8 @@ const image = (label: string) =>
   });
 
 export default config({
-  storage: import.meta.env.PROD
+  // GitHub mode in production, or locally with `npm run cms:setup` (runs the GitHub App wizard once).
+  storage: import.meta.env.PROD || import.meta.env.MODE === 'github'
     ? { kind: 'github', repo: 'a-gradim/daniel-portefolio' }
     : { kind: 'local' },
   ui: {
