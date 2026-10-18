@@ -1,0 +1,139 @@
+---
+import { Image } from 'astro:assets';
+import { localePath, useT, type Locale } from '../../i18n/ui';
+import { pick, projectImages, type Project } from '../../lib/content';
+import { layoutPattern, shuffle } from './layout';
+
+interface Props { projects: Project[]; locale: Locale }
+const { projects, locale } = Astro.props;
+const t = useT(locale);
+
+const items = projects
+  .filter((p) => p.data.featured)
+  .flatMap((p) =>
+    projectImages(p).map((img) => ({
+      img,
+      href: localePath(locale, '/work/' + p.id),
+      title: p.data.title,
+      discipline: pick(p.data.discipline, locale),
+      project: p.id,
+    })),
+  );
+
+// Pad small sets by repeating so the pattern always has enough tiles to fill a screen.
+let list = shuffle(items, 5);
+while (items.length && list.length < 20) list = list.concat(shuffle(items, list.length + 7));
+const { tiles, W, H } = layoutPattern(list.map((i) => i.img.src.height / i.img.src.width));
+---
+<div class="cv" data-canvas data-w={W} data-h={H}>
+  <div class="cv-view" role="region" aria-label={t('canvas.hint')}>
+    <div class="cv-layer">
+      {list.map((it, i) => (
+        <div class="tile" data-x={tiles[i].x} data-y={tiles[i].y} data-w={tiles[i].w} data-h={tiles[i].h}
+          style={`left:${tiles[i].x}px;top:${tiles[i].y}px;width:${tiles[i].w}px;height:${tiles[i].h}px`}>
+          <a href={it.href} data-title={it.title} data-discipline={it.discipline} draggable="false"
+            aria-label={it.discipline ? `${it.title} — ${it.discipline}` : it.title}>
+            <Image src={it.img.src} alt={it.img.alt} width={640} widths={[320, 640]}
+              sizes={`${tiles[i].w}px`} loading="lazy" decoding="async" draggable="false" />
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="cv-caption" aria-hidden="true"><span class="cv-ct"></span><span class="cv-cd"></span></div>
+  <p class="cv-hint" aria-hidden="true">
+    <span class="mouse">{t('canvas.hint')}</span><span class="touch">{t('canvas.hintTouch')}</span>
+  </p>
+  <div class="cv-zoom">
+    <button type="button" data-zoom="out" aria-label={t('canvas.zoomOut')}>−</button>
+    <span data-zoom-label>100%</span>
+    <button type="button" data-zoom="in" aria-label={t('canvas.zoomIn')}>+</button>
+  </div>
+  <noscript><style>.cv:not(.is-ready) .tile{opacity:1}</style></noscript>
+</div>
+
+<style>
+  .cv { position: relative; width: 100%; height: 100%; overflow: clip; background: var(--bg); color: var(--ink); }
+  .cv-view {
+    position: absolute; inset: 0; overflow: clip; cursor: grab; touch-action: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; overscroll-behavior: none;
+  }
+  .cv.is-dragging .cv-view { cursor: grabbing; }
+  .cv-layer { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; will-change: transform; }
+  .tile { position: absolute; }
+  .cv:not(.is-ready) .tile { opacity: 0; }
+  .tile a { display: block; width: 100%; height: 100%; background: var(--surface); cursor: inherit; -webkit-user-drag: none; }
+  .tile :global(img) {
+    display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none;
+    -webkit-user-drag: none; transition: opacity var(--dur) var(--ease);
+  }
+  .tile a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .cv.is-ready .tile a { animation: cv-in var(--dur-slow) var(--ease) backwards; animation-delay: var(--d, 0s); }
+  @keyframes cv-in { from { opacity: 0; transform: scale(0.92); } }
+  @media (hover: hover) {
+    .cv:not(.is-dragging) .cv-layer:has(a:hover) .tile a:not(:hover) :global(img) { opacity: 0.35; }
+  }
+
+  .cv-caption, .cv-hint, .cv-zoom {
+    font-family: var(--font-label); font-size: var(--fs-xs); letter-spacing: var(--tracking-label);
+    text-transform: var(--case-label); line-height: 1.3;
+  }
+  .cv-caption {
+    position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none; opacity: 0;
+    padding: var(--space-2) var(--space-3); background: var(--bg); border: 1px solid var(--hair);
+    display: flex; flex-direction: column; gap: 2px; max-width: min(320px, 80vw);
+    transition: opacity var(--dur-fast) var(--ease);
+  }
+  .cv.is-hover:not(.is-dragging) .cv-caption { opacity: 1; }
+  .cv-ct { color: var(--ink); }
+  .cv-cd { color: var(--muted); }
+  .cv-cd:empty { display: none; }
+
+  .cv-hint {
+    position: absolute; left: 50%; z-index: 2; transform: translateX(-50%); pointer-events: none; color: var(--muted);
+    bottom: calc(var(--gutter) + env(safe-area-inset-bottom, 0px)); height: 44px; display: flex; align-items: center;
+    white-space: nowrap; margin: 0; opacity: 0; animation: cv-fade var(--dur-slow) var(--ease) 1.2s forwards;
+    transition: opacity var(--dur) var(--ease);
+  }
+  .cv.is-touched .cv-hint { animation: none; opacity: 0; }
+  .cv-hint .touch { display: none; }
+  @media (pointer: coarse) { .cv-hint .mouse { display: none; } .cv-hint .touch { display: inline; } }
+  @media (max-width: 640px) { .cv-hint { bottom: calc(var(--gutter) + 44px + var(--space-2) + env(safe-area-inset-bottom, 0px)); } }
+  @keyframes cv-fade { to { opacity: 1; } }
+
+  .cv-zoom {
+    position: absolute; z-index: 2; display: flex; align-items: center;
+    left: calc(var(--gutter) + env(safe-area-inset-left, 0px)); bottom: calc(var(--gutter) + env(safe-area-inset-bottom, 0px));
+    background: var(--bg); border: 1px solid var(--hair);
+  }
+  .cv-zoom button {
+    width: 44px; height: 44px; padding: 0; border: 0; background: none; color: var(--ink); cursor: pointer;
+    font: inherit; font-size: var(--fs-md); touch-action: manipulation;
+  }
+  .cv-zoom button:hover { background: var(--surface); }
+  .cv-zoom button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .cv-zoom [data-zoom-label] { min-width: 48px; text-align: center; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cv.is-ready .tile a { animation: none; }
+    .cv-hint { animation: none; opacity: 1; }
+    .cv.is-touched .cv-hint { opacity: 0; }
+  }
+</style>
+
+<script>
+  import { initCanvas } from './canvas';
+
+  let cleanup: (() => void) | undefined;
+  const init = () => {
+    const root = document.querySelector<HTMLElement>('[data-canvas]');
+    if (!root || (root as any).__cv) return;
+    (root as any).__cv = true;
+    cleanup?.();
+    cleanup = initCanvas(root);
+  };
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-swap', () => { cleanup?.(); cleanup = undefined; });
+  init();
+</script>
