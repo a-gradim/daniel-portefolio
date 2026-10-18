@@ -1,0 +1,32 @@
+title: "Traz os Monstros — Visuals"
+section: traz
+year: null
+discipline:
+  en: Moving Image / Visuals
+  pt: "Imagem em movimento / Visuais"
+client: Traz os Monstros
+cover: ../../assets/projects/traz-visuals/tom-1-cv.jpg
+gallery: []
+videos:
+  - youtube: null
+    title: tom 1 cv
+    vertical: false
+    poster: ../../assets/projects/traz-visuals/tom-1-cv.jpg
+  - youtube: null
+    title: tom 2 cv
+    vertical: false
+    poster: ../../assets/projects/traz-visuals/tom-2-cv.jpg
+  - youtube: null
+    title: megaa cube tom1
+    vertical: false
+    poster: ../../assets/projects/traz-visuals/megaa-cube-tom1.jpg
+  - youtube: null
+    title: cube tom1
+    vertical: false
+    poster: ../../assets/projects/traz-visuals/cube-tom1.jpg
+credits: "Visual Development · Experimental Editing"
+body:
+  en: "An experimental set of visual pieces developed for Traz os Monstros across still and moving image.\n\nThe work uses distortion, repetition, collage-like image treatment and motion to expand the project’s identity beyond conventional promotional content.\n\nThis section works as a visual testing ground, connecting graphic experimentation with short-form video and digital communication."
+  pt: "Um conjunto experimental de peças visuais desenvolvidas para os Traz os Monstros, em imagem fixa e em movimento.\n\nO trabalho recorre à distorção, à repetição, a um tratamento de imagem em forma de colagem e ao movimento para ampliar a identidade do projeto para além da comunicação promocional convencional.\n\nEsta secção funciona como um terreno de testes visuais, ligando a experimentação gráfica ao vídeo de curta duração e à comunicação digital."
+featured: true
+order: 2

@@ -1,0 +1,30 @@
+title: Not Found
+section: notfound
+year: null
+discipline:
+  en: Photography
+  pt: "Fotografia"
+client: Collaboration
+cover: ../../assets/projects/notfound/01-1-p1370766.webp
+gallery:
+  - image: ../../assets/projects/notfound/02-2-p1370725.webp
+    alt: ''
+  - image: ../../assets/projects/notfound/03-3-p1370723.webp
+    alt: ''
+  - image: ../../assets/projects/notfound/04-4-p1370722.webp
+    alt: ''
+  - image: ../../assets/projects/notfound/05-5-p1370702.webp
+    alt: ''
+  - image: ../../assets/projects/notfound/06-6-p1370697.webp
+    alt: ''
+  - image: ../../assets/projects/notfound/07-7-p1370659.webp
+    alt: ''
+  - image: ../../assets/projects/notfound/08-8-p1370657.webp
+    alt: ''
+videos: []
+credits: "Collaborative Concept · Photography · Editing"
+body:
+  en: "A collaborative visual project developed with NotFound.\n\nThe concept was built jointly, combining both perspectives into a shared visual language rather than following a predefined commercial brief.\n\nI worked on the development of the visual approach, captured the material and handled the final editing, shaping the collaboration into a coherent final series."
+  pt: "Um projeto visual colaborativo desenvolvido com a NotFound.\n\nO conceito foi construído em conjunto, combinando as duas perspetivas numa linguagem visual partilhada, em vez de seguir um briefing comercial pré-definido.\n\nTrabalhei no desenvolvimento da abordagem visual, captei o material e fiz a edição final, dando forma à colaboração numa série coerente."
+featured: true
+order: 0

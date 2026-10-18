@@ -1,0 +1,48 @@
+title: "Traz os Monstros — Videos"
+section: traz
+year: null
+discipline:
+  en: Video
+  pt: "Vídeo"
+client: Traz os Monstros
+cover: ../../assets/projects/traz-videos/03-canvas-final.jpg
+gallery: []
+videos:
+  - youtube: null
+    title: canvas final
+    vertical: true
+    poster: ../../assets/projects/traz-videos/03-canvas-final.jpg
+  - youtube: null
+    title: visualizer story
+    vertical: true
+    poster: ../../assets/projects/traz-videos/07-visualizer-story.jpg
+  - youtube: null
+    title: WhatsApp Video 2026-10-06 at 19.27.05
+    vertical: true
+    poster: ../../assets/projects/traz-videos/08-whatsapp-video-2026-10-06-at-19-27-05.jpg
+  - youtube: null
+    title: bts pilates FINAL FINAL
+    vertical: true
+    poster: ../../assets/projects/traz-videos/06-bts-pilates-final-final.jpg
+  - youtube: null
+    title: tom uav reell1
+    vertical: false
+    poster: ../../assets/projects/traz-videos/01-tom-uav-reell1.jpg
+  - youtube: null
+    title: "Juro que estamos a trabalhar num álbum...a sério! (2_3) #music #musica"
+    vertical: true
+    poster: ../../assets/projects/traz-videos/02-juro-que-estamos-a-trabalhar-num-lbum-a-s-rio-2-3-music-musica.jpg
+  - youtube: null
+    title: "Juro que estamos a trabalhar num álbum...a sério (3_3) #music #musica"
+    vertical: true
+    poster: ../../assets/projects/traz-videos/04-juro-que-estamos-a-trabalhar-num-lbum-a-s-rio-3-3-music-musica.jpg
+  - youtube: null
+    title: "juro que estamos a trabalhar num álbum...a sério! (1_1) #musica  #music"
+    vertical: true
+    poster: ../../assets/projects/traz-videos/05-juro-que-estamos-a-trabalhar-num-lbum-a-s-rio-1-1-musica-music.jpg
+credits: "Filming · Editing · Visual Development"
+body:
+  en: "A series of short-form videos created around Traz os Monstros for digital communication.\n\nThe work is driven by rhythm, performance and fast visual ideas, with editing used to keep each piece distinct while still belonging to the same broader visual world."
+  pt: "Uma série de vídeos de curta duração criados em torno dos Traz os Monstros para comunicação digital.\n\nO trabalho é guiado pelo ritmo, pela performance e por ideias visuais rápidas, com a montagem a manter cada peça distinta, sem deixar de pertencer ao mesmo universo visual."
+featured: true
+order: 4
