@@ -634,6 +634,20 @@ export function initCanvas(root: HTMLElement): () => void {
   }
   requestAnimationFrame(() => root.classList.add('is-ready'));
 
+  /* ---------- pointer parallax (mouse only): eased --mx/--my in -1..1 on the layer ---------- */
+  let px = 0, py = 0, tx = 0, ty = 0, praf = 0;
+  const pstep = () => {
+    px += (tx - px) * 0.08; py += (ty - py) * 0.08;
+    layer.style.setProperty('--mx', px.toFixed(3));
+    layer.style.setProperty('--my', py.toFixed(3));
+    praf = Math.abs(tx - px) + Math.abs(ty - py) > 0.002 ? requestAnimationFrame(pstep) : 0;
+  };
+  on(window, 'pointermove', (e: PointerEvent) => {
+    if (e.pointerType !== 'mouse' || reduce()) return;
+    tx = (e.clientX / innerWidth - 0.5) * 2; ty = (e.clientY / innerHeight - 0.5) * 2;
+    if (!praf) praf = requestAnimationFrame(pstep);
+  });
+
   // Deep link: ?p=<project-slug>
   const deep = new URLSearchParams(location.search).get('p');
   if (deep && projects.has(deep)) {
@@ -648,5 +662,6 @@ export function initCanvas(root: HTMLElement): () => void {
     clearTimeout(settleTimer);
     clearTimeout(drawTimer);
     if (raf) cancelAnimationFrame(raf);
+    if (praf) cancelAnimationFrame(praf);
   };
 }
