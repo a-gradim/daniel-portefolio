@@ -1,9 +1,7 @@
 title: 'Candle '
 section: product-photography
 year: 2026
-discipline:
-  en: Photography
-  pt: Fotografia
+discipline: photography
 cover: ../../assets/projects/candle/cover.webp
 gallery:
   - image: ../../assets/projects/candle/1-P1510984.webp

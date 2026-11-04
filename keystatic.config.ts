@@ -26,9 +26,20 @@ export default config({
     : { kind: 'local' },
   ui: {
     brand: { name: 'Daniel Neto' },
-    navigation: { Content: ['projects', 'sections'], Site: ['settings'] },
+    navigation: { Content: ['projects', 'sections', 'disciplines'], Site: ['settings'] },
   },
   collections: {
+    disciplines: collection({
+      label: 'Disciplines',
+      path: 'src/content/disciplines/*',
+      format: 'yaml',
+      slugField: 'name',
+      columns: ['name', 'pt'],
+      schema: {
+        name: fields.slug({ name: { label: 'English' } }),
+        pt: fields.text({ label: 'Português' }),
+      },
+    }),
     sections: collection({
       label: 'Sections (clients / series)',
       path: 'src/content/sections/*',
@@ -50,7 +61,7 @@ export default config({
         title: fields.slug({ name: { label: 'Title' } }),
         section: fields.relationship({ label: 'Section', collection: 'sections' }),
         year: fields.integer({ label: 'Year' }),
-        discipline: i18nText('Discipline (e.g. Photography / Video)'),
+        discipline: fields.relationship({ label: 'Discipline', collection: 'disciplines' }),
         client: fields.text({ label: 'Client / note' }),
         cover: image('Cover image'),
         gallery: fields.array(

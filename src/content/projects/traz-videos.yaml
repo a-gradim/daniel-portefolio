@@ -1,9 +1,7 @@
 title: "Traz os Monstros — Videos"
 section: traz
 year: null
-discipline:
-  en: Video
-  pt: "Vídeo"
+discipline: video
 client: Traz os Monstros
 cover: ../../assets/projects/traz-videos/03-canvas-final.jpg
 gallery: []

@@ -3,6 +3,11 @@ import { glob } from 'astro/loaders';
 
 const i18n = z.object({ en: z.string().default(''), pt: z.string().default('') });
 
+const disciplines = defineCollection({
+  loader: glob({ pattern: '*.yaml', base: './src/content/disciplines' }),
+  schema: z.object({ name: z.string(), pt: z.string().default('') }),
+});
+
 const sections = defineCollection({
   loader: glob({ pattern: '*.yaml', base: './src/content/sections' }),
   schema: z.object({ title: z.string(), order: z.number().default(0) }),
@@ -15,7 +20,7 @@ const projects = defineCollection({
       title: z.string(),
       section: z.string().nullable().optional(),
       year: z.number().nullable().optional(),
-      discipline: i18n,
+      discipline: z.string().nullable().optional(),
       client: z.string().default(''),
       cover: image().nullable().optional(),
       gallery: z.array(z.object({ image: image(), alt: z.string().default(''), seq: z.string().nullable().optional() })).default([]),
@@ -52,4 +57,4 @@ const settings = defineCollection({
   }),
 });
 
-export const collections = { sections, projects, settings };
+export const collections = { disciplines, sections, projects, settings };
