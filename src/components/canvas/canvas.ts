@@ -371,6 +371,18 @@ export function initCanvas(root: HTMLElement): () => void {
     return { x: x0 - pad, y: y0 - pad * 1.6, w: x1 - x0 + pad * 2, h: y1 - y0 + pad * 2.6 };
   }
 
+  // Approximate cubic Bézier length by sampling (getTotalLength can return 0 before first render).
+  function bezLen(p: number[]) {
+    let len = 0, px = p[0], py = p[1];
+    for (let i = 1; i <= 32; i++) {
+      const t = i / 32, u = 1 - t;
+      const x = u * u * u * p[0] + 3 * u * u * t * p[2] + 3 * u * t * t * p[4] + t * t * t * p[6];
+      const y = u * u * u * p[1] + 3 * u * u * t * p[3] + 3 * u * t * t * p[5] + t * t * t * p[7];
+      len += Math.hypot(x - px, y - py); px = x; py = y;
+    }
+    return Math.ceil(len) + 2;
+  }
+
   function drawEdges(pr: Proj, instant: boolean) {
     clearTimeout(drawTimer);
     edgesSvg.replaceChildren();
@@ -381,21 +393,25 @@ export function initCanvas(root: HTMLElement): () => void {
       if (!A || !B) continue;
       const ax = A.x + A.w / 2, ay = A.y + A.h / 2, bx = B.x + B.w / 2, by = B.y + B.h / 2;
       const dx = bx - ax, dy = by - ay;
-      const d = Math.abs(dx) >= Math.abs(dy)
-        ? `M${ax} ${ay}C${ax + dx * 0.55} ${ay} ${bx - dx * 0.55} ${by} ${bx} ${by}`
-        : `M${ax} ${ay}C${ax} ${ay + dy * 0.55} ${bx} ${by - dy * 0.55} ${bx} ${by}`;
+      const c = Math.abs(dx) >= Math.abs(dy)
+        ? [ax, ay, ax + dx * 0.55, ay, bx - dx * 0.55, by, bx, by]
+        : [ax, ay, ax, ay + dy * 0.55, bx, by - dy * 0.55, bx, by];
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.setAttribute('d', d);
+      path.setAttribute('d', `M${c[0]} ${c[1]}C${c[2]} ${c[3]} ${c[4]} ${c[5]} ${c[6]} ${c[7]}`);
+      const len = bezLen(c);
+      path.style.strokeDasharray = `${len}`;
+      path.style.strokeDashoffset = `${len}`;
       path.style.setProperty('--delay', (0.2 + ranks.indexOf(A.rank) * 0.35).toFixed(2) + 's');
       paths.push(path);
     }
     edgesSvg.append(...paths);
-    for (const p of paths) p.style.setProperty('--len', String(Math.ceil(p.getTotalLength()) + 2));
-    if (instant || reduce()) return paths.forEach((p) => p.classList.add('drawn', 'done'));
-    void edgesSvg.getBoundingClientRect();
-    paths.forEach((p) => p.classList.add('drawn'));
-    drawTimer = window.setTimeout(() => paths.forEach((p) => p.classList.add('done')), (0.2 + ranks.length * 0.35 + 1.5) * 1000);
+    const finish = () => paths.forEach((p) => { p.style.strokeDasharray = 'none'; p.style.strokeDashoffset = '0'; p.classList.add('done'); });
+    if (instant || reduce()) return finish();
+    // Two frames so the hidden start state is painted before the transition to 0 begins.
+    requestAnimationFrame(() => requestAnimationFrame(() => paths.forEach((p) => (p.style.strokeDashoffset = '0'))));
+    drawTimer = window.setTimeout(finish, (0.2 + ranks.length * 0.35 + 1.6) * 1000);
   }
+
 
   function fillPanel(pr: Proj, side: Side) {
     panel.dataset.side = side;

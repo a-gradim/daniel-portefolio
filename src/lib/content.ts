@@ -30,12 +30,9 @@ export async function getSettings() {
   return s.data;
 }
 
-/** All images of a project in display order (cover first, then gallery, then video posters). */
+/** All images of a project in sequence order (see projectMedia). */
 export function projectImages(p: Project) {
-  const imgs = p.data.gallery.map((g) => ({ src: g.image, alt: g.alt || p.data.title }));
-  if (p.data.cover) imgs.unshift({ src: p.data.cover, alt: p.data.title });
-  for (const v of p.data.videos) if (v.poster) imgs.push({ src: v.poster, alt: v.title || p.data.title });
-  return imgs;
+  return projectMedia(p).map((m) => ({ src: m.src, alt: m.alt }));
 }
 
 export type MediaItem = {
@@ -64,6 +61,11 @@ const fileName = (img: ImageMetadata) =>
  * Order comes from the "Position" field, else the file-name prefix (1_, 2_, 3a_, 3b_), else list order.
  * Use `mediaEdges` to get the lines between consecutive ranks.
  */
+const folderImages = import.meta.glob<ImageMetadata>('/src/assets/projects/*/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP}', {
+  eager: true,
+  import: 'default',
+});
+
 export function projectMedia(p: Project): MediaItem[] {
   const list: (Omit<MediaItem, 'seq' | 'rank'> & { seqField?: string | null })[] = [];
   // Skip the cover when it is also a video poster (video-only projects): the video tile represents it.
@@ -75,6 +77,11 @@ export function projectMedia(p: Project): MediaItem[] {
   for (const v of p.data.videos)
     if (v.poster)
       list.push({ kind: 'video', src: v.poster, alt: v.title || p.data.title, youtube: v.youtube ?? null, vertical: v.vertical, seqField: v.seq });
+  // Images dropped straight into src/assets/projects/<slug>/ (e.g. bulk upload on GitHub) join the gallery automatically.
+  const known = new Set(list.map((m) => m.src.src.split('?')[0]));
+  for (const [path, img] of Object.entries(folderImages))
+    if (path.startsWith(`/src/assets/projects/${p.id}/`) && !known.has(img.src.split('?')[0]))
+      list.push({ kind: 'image', src: img, alt: p.data.title, youtube: null, vertical: false, seqField: null });
   const items = list.map((m, i) => {
     const parsed = parseSeq(m.seqField) ?? parseSeq(fileName(m.src));
     const { seqField: _seq, ...rest } = m;

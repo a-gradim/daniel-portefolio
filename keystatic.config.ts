@@ -57,7 +57,7 @@ export default config({
             alt: fields.text({ label: 'Alt text' }),
             seq: fields.text({ label: 'Position (e.g. 1, 2, 3a, 3b) — empty = from file name, then list order' }),
           }),
-          { label: 'Gallery', itemLabel: (p) => p.fields.alt.value || 'Image' },
+          { label: 'Gallery', itemLabel: (p) => [p.fields.seq.value, p.fields.image.value?.filename || p.fields.alt.value || 'Image'].filter(Boolean).join(' · ') },
         ),
         videos: fields.array(
           fields.object({
@@ -67,7 +67,7 @@ export default config({
             poster: image('Poster (optional)'),
             seq: fields.text({ label: 'Position (e.g. 1, 2, 3a, 3b) — empty = from file name, then list order' }),
           }),
-          { label: 'Videos', itemLabel: (p) => p.fields.title.value || 'Video' },
+          { label: 'Videos', itemLabel: (p) => [p.fields.seq.value, p.fields.title.value || p.fields.poster.value?.filename || 'Video'].filter(Boolean).join(' · ') },
         ),
         credits: fields.text({ label: 'Credits (e.g. Concept · Photography · Editing)' }),
         body: i18nText('Case study text', true),

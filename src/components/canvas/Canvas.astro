@@ -117,14 +117,12 @@ const projectInfo = groups.map(({ p, media }) => ({
   .cv.is-moving .cv-layer { will-change: transform; }
   .cv-edges { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
   .cv-edges :global(path) {
-    /* Constant ~2px on screen at any zoom (--inv = 1/zoom); dashes in real length for a clean draw-on. */
+    /* Constant ~2px on screen at any zoom (--inv = 1/zoom); dash length set in JS for the draw-on. */
     fill: none; stroke: var(--ink); stroke-width: calc(2px * var(--inv));
     stroke-linecap: round; stroke-linejoin: round; opacity: 0.9;
-    stroke-dasharray: var(--len, 1); stroke-dashoffset: var(--len, 1);
     transition: stroke-dashoffset 1.4s cubic-bezier(0.65, 0, 0.35, 1) var(--delay, 0s);
   }
-  .cv-edges :global(path.drawn) { stroke-dashoffset: 0; }
-  .cv-edges :global(path.done) { stroke-dasharray: none; transition: none; }
+  .cv-edges :global(path.done) { transition: none; }
 
   .tile { position: absolute; transition: opacity var(--dur) var(--ease); }
   .cv:not(.is-ready) .tile { opacity: 0; }
