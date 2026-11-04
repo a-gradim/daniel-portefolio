@@ -2,7 +2,12 @@ import { marked } from 'marked';
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import type { Locale } from '../i18n/ui';
 
-export type Project = CollectionEntry<'projects'>;
+type I18n = { en: string; pt: string };
+type RawProject = CollectionEntry<'projects'>;
+/** A project with its discipline resolved from the Disciplines collection to { en, pt }. */
+export type Project = Omit<RawProject, 'data'> & {
+  data: Omit<RawProject['data'], 'discipline'> & { discipline: I18n; disciplineId: string | null };
+};
 export type Section = CollectionEntry<'sections'>;
 
 /** Pick the localized value of an {en, pt} field, falling back to EN. */
@@ -17,7 +22,16 @@ export async function getSections() {
 export async function getProjects() {
   const sections = await getSections();
   const sectionOrder = new Map(sections.map((s, i) => [s.id, i]));
-  return (await getCollection('projects')).sort(
+  const disciplines = new Map((await getCollection('disciplines')).map((d) => [d.id, { en: d.data.name, pt: d.data.pt || d.data.name }]));
+  const projects: Project[] = (await getCollection('projects')).map((p) => ({
+    ...p,
+    data: {
+      ...p.data,
+      disciplineId: p.data.discipline ?? null,
+      discipline: disciplines.get(p.data.discipline ?? '') ?? { en: '', pt: '' },
+    },
+  }));
+  return projects.sort(
     (a, b) =>
       (sectionOrder.get(a.data.section ?? '') ?? 999) - (sectionOrder.get(b.data.section ?? '') ?? 999) ||
       a.data.order - b.data.order ||
