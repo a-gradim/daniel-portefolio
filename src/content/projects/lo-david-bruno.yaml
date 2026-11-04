@@ -1,42 +1,58 @@
-title: "BTS Lo Siento × David Bruno"
+title: BTS Lo Siento × David Bruno
 section: losiento
-year: null
 discipline:
   en: Photography / Video
-  pt: "Fotografia / Vídeo"
+  pt: Fotografia / Vídeo
 client: Lo Siento
-cover: ../../assets/projects/lo-david-bruno/01-8-dsc0272.webp
+cover: ../../assets/projects/lo-david-bruno/cover.webp
 gallery:
-  - seq: '2'
-    image: ../../assets/projects/lo-david-bruno/02-1-dsc0105.webp
-    alt: ''
-  - seq: '3'
-    image: ../../assets/projects/lo-david-bruno/03-2-dsc0126.webp
-    alt: ''
-  - seq: '4'
-    image: ../../assets/projects/lo-david-bruno/04-3-dsc0183.webp
-    alt: ''
-  - seq: '5'
-    image: ../../assets/projects/lo-david-bruno/05-4-dsc0202.webp
-    alt: ''
-  - seq: '6'
-    image: ../../assets/projects/lo-david-bruno/06-5-dsc0207.webp
-    alt: ''
-  - seq: '7'
-    image: ../../assets/projects/lo-david-bruno/07-6-dsc0213.webp
-    alt: ''
-  - seq: '8'
-    image: ../../assets/projects/lo-david-bruno/08-7-dsc0264.webp
-    alt: ''
+  - image: ../../assets/projects/lo-david-bruno/gallery/0/image.webp
+    seq: '2'
+  - image: ../../assets/projects/lo-david-bruno/gallery/1/image.webp
+    seq: '3'
+  - image: ../../assets/projects/lo-david-bruno/gallery/2/image.webp
+    seq: '4'
+  - image: ../../assets/projects/lo-david-bruno/gallery/3/image.webp
+    seq: '5'
+  - image: ../../assets/projects/lo-david-bruno/gallery/4/image.webp
+    seq: '6'
+  - image: ../../assets/projects/lo-david-bruno/gallery/5/image.webp
+    seq: '7'
+  - image: ../../assets/projects/lo-david-bruno/gallery/6/image.webp
+    seq: '8'
 videos:
-  - seq: '9'
-    youtube: null
+  - youtube: https://youtu.be/uepAXQsdeqU
     title: david bruno vhs 1
     vertical: false
-    poster: ../../assets/projects/lo-david-bruno/01-david-bruno-vhs-1.jpg
-credits: "Concept · Photography · Video · Editing"
+    poster: ../../assets/projects/lo-david-bruno/videos/0/poster.jpg
+    seq: '9'
+credits: Concept · Photography · Video · Editing
 body:
-  en: "Behind-the-scenes content created around the collaboration between LOSIENTO and David Bruno.\n\nThe approach was intentionally informal and observational, staying close to the people, spaces and moments surrounding the production rather than making the process feel overly staged.\n\nPhotography and VHS-style video were used together to create a more immediate and imperfect record of the collaboration, followed by editing and post-production for digital communication."
-  pt: "Conteúdo de bastidores criado em torno da colaboração entre a LOSIENTO e o David Bruno.\n\nA abordagem foi intencionalmente informal e observacional, próxima das pessoas, dos espaços e dos momentos que rodeiam a produção, em vez de tornar o processo demasiado encenado.\n\nA fotografia e o vídeo em estilo VHS foram usados em conjunto para criar um registo mais imediato e imperfeito da colaboração, seguido de montagem e pós-produção para comunicação digital."
+  en: >-
+    Behind-the-scenes content created around the collaboration between LOSIENTO
+    and David Bruno.
+
+
+    The approach was intentionally informal and observational, staying close to
+    the people, spaces and moments surrounding the production rather than making
+    the process feel overly staged.
+
+
+    Photography and VHS-style video were used together to create a more
+    immediate and imperfect record of the collaboration, followed by editing and
+    post-production for digital communication.
+  pt: >-
+    Conteúdo de bastidores criado em torno da colaboração entre a LOSIENTO e o
+    David Bruno.
+
+
+    A abordagem foi intencionalmente informal e observacional, próxima das
+    pessoas, dos espaços e dos momentos que rodeiam a produção, em vez de tornar
+    o processo demasiado encenado.
+
+
+    A fotografia e o vídeo em estilo VHS foram usados em conjunto para criar um
+    registo mais imediato e imperfeito da colaboração, seguido de montagem e
+    pós-produção para comunicação digital.
 featured: true
 order: 1
