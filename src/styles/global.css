@@ -119,3 +119,25 @@ button {
     scroll-behavior: auto !important;
   }
 }
+
+/* Case-study Markdown (### titles, lists, bold, links). */
+.prose > * + * { margin-top: 0.9em; }
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: var(--case-label);
+  font-weight: 500;
+  color: var(--muted);
+  margin-top: 2em;
+}
+.prose > :first-child { margin-top: 0; }
+.prose h1 + *, .prose h2 + *, .prose h3 + *, .prose h4 + * { margin-top: 0.5em; }
+.prose ul, .prose ol { padding-left: 1.2em; }
+.prose ul { list-style: '— '; }
+.prose ol { list-style: decimal; }
+.prose li + li { margin-top: 0.3em; }
+.prose strong { font-weight: 600; }
+.prose em { font-style: italic; }
+.prose a { text-decoration: underline; text-underline-offset: 0.2em; }
+.prose blockquote { padding-left: 1em; border-left: 1px solid var(--hair); color: var(--muted); }

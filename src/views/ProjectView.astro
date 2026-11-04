@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import { getProjects, getSections, pick, projectImages, youtubeId } from '../lib/content';
+import { getProjects, getSections, md, pick, projectImages, youtubeId } from '../lib/content';
 import { localePath, useT, type Locale } from '../i18n/ui';
 
 interface Props {
@@ -19,10 +19,7 @@ const d = project.data;
 const sections = await getSections();
 const clientLabel = d.client || sections.find((s) => s.id === d.section)?.data.title || '';
 const discipline = pick(d.discipline, locale);
-const paragraphs = pick(d.body, locale)
-  .split(/\n\s*\n/)
-  .map((s) => s.trim())
-  .filter(Boolean);
+const bodyHtml = md(pick(d.body, locale));
 
 // Cover + gallery (video posters are used by the video facades below).
 const posterSrcs = new Set(d.videos.map((v) => v.poster?.src).filter(Boolean));
@@ -47,7 +44,9 @@ const meta = [
   { label: t('project.credits'), value: d.credits.trim(), wide: true },
 ].filter((m) => m.value);
 
-const description = paragraphs[0]?.slice(0, 160) || [discipline, clientLabel].filter(Boolean).join(' — ') || undefined;
+// Meta description: first paragraph of the case study without Markdown symbols.
+const plain = pick(d.body, locale).replace(/^[\s>#*-]+/gm, '').replace(/[*_`[\]]/g, '').trim();
+const description = plain.split(/\n\s*\n/)[0]?.slice(0, 160) || [discipline, clientLabel].filter(Boolean).join(' — ') || undefined;
 ---
 <Base locale={locale} title={d.title} description={description} image={d.cover ?? images[0]?.src}>
   <main class="page project">
@@ -66,13 +65,7 @@ const description = paragraphs[0]?.slice(0, 160) || [discipline, clientLabel].fi
       </dl>
     )}
 
-    {paragraphs.length > 0 && (
-      <div class="body">
-        {paragraphs.map((para) => (
-          <p>{para}</p>
-        ))}
-      </div>
-    )}
+    {bodyHtml && <div class="body prose" set:html={bodyHtml} />}
 
     {images.length > 0 && (
       <section class="gallery" aria-label={t('project.gallery')}>
@@ -172,8 +165,6 @@ const description = paragraphs[0]?.slice(0, 160) || [discipline, clientLabel].fi
     white-space: pre-line;
   }
   .body {
-    display: grid;
-    gap: var(--space-3);
     max-width: 62ch;
     margin-top: var(--space-5);
     font-size: var(--fs-md);

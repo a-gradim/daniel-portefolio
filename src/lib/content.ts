@@ -1,3 +1,4 @@
+import { marked } from 'marked';
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import type { Locale } from '../i18n/ui';
 
@@ -122,3 +123,6 @@ export function youtubeId(url?: string | null) {
   const m = url.match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/);
   return m ? m[1] : null;
 }
+
+/** Case-study text is Markdown (### titles, - lists, **bold**, links). Rendered at build time. */
+export const md = (text: string) => (text.trim() ? (marked.parse(text, { async: false, breaks: true }) as string) : '');

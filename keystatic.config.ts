@@ -72,7 +72,7 @@ export default config({
           { label: 'Videos', itemLabel: (p) => [p.fields.seq.value, p.fields.title.value || p.fields.poster.value?.filename || 'Video'].filter(Boolean).join(' · ') },
         ),
         credits: fields.text({ label: 'Credits (e.g. Concept · Photography · Editing)' }),
-        body: i18nText('Case study text', true),
+        body: i18nText('Case study text (Markdown: ### title, - list, **bold**)', true),
         featured: fields.checkbox({ label: 'Show on home canvas', defaultValue: true }),
         order: fields.integer({ label: 'Order', defaultValue: 0 }),
       },

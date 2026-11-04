@@ -1,7 +1,7 @@
 ---
 import { Image, getImage } from 'astro:assets';
 import { localePath, useT, type Locale } from '../../i18n/ui';
-import { mediaEdges, pick, projectMedia, youtubeId, type Project } from '../../lib/content';
+import { md, mediaEdges, pick, projectMedia, youtubeId, type Project } from '../../lib/content';
 import { layoutScatter, shuffle } from './layout';
 
 interface Props { projects: Project[]; locale: Locale }
@@ -26,7 +26,7 @@ const projectInfo = groups.map(({ p, media }) => ({
   title: p.data.title,
   meta: [p.data.client, pick(p.data.discipline, locale), p.data.year].filter(Boolean).join(' · '),
   credits: (p.data.credits || '').trim(),
-  paragraphs: pick(p.data.body, locale).split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean),
+  bodyHtml: md(pick(p.data.body, locale)),
   href: localePath(locale, '/work/' + p.id),
   edges: mediaEdges(media),
 }));
@@ -65,7 +65,7 @@ const projectInfo = groups.map(({ p, media }) => ({
       {pi.credits && (
         <div class="cp-credits"><span class="cp-label">{t('project.credits')}</span><p>{pi.credits}</p></div>
       )}
-      {pi.paragraphs.length > 0 && <div class="cp-text">{pi.paragraphs.map((s) => <p>{s}</p>)}</div>}
+      {pi.bodyHtml && <div class="cp-text prose" set:html={pi.bodyHtml} />}
       <a class="cp-link" href={pi.href}>{t('canvas.viewProject')} →</a>
     </template>
   ))}
