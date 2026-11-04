@@ -16,7 +16,7 @@ gallery:
 videos: []
 credits: Product Photography · Art Direction · Lighting
 body:
-  en: >-
+  en: >+
     ### Overview
 
     A product photography study exploring the visual identity of a candle
@@ -58,10 +58,7 @@ body:
     commercial photography and artistic expression, presenting the candle
     through a distinct visual perspective.
 
-
-    **Services:** Art Direction · Product Photography · Lighting ·
-    Post-production
-  pt: >-
+  pt: >
     ### Visão Geral
 
     Um estudo de fotografia de produto que explora a identidade visual de uma
@@ -101,9 +98,5 @@ body:
     Uma série de fotografias de produto que explora a interseção entre a
     fotografia publicitária e a expressão artística, apresentando a vela através
     de uma perspetiva visual própria.
-
-
-    **Serviços:** Direção de Arte · Fotografia de Produto · Iluminação ·
-    Pós-produção
 featured: true
 order: 0
