@@ -1,4 +1,5 @@
 import { config, collection, singleton, fields } from '@keystatic/core';
+import { compressedImage } from './src/lib/keystatic-image';
 
 // Bilingual text helper: every user-facing string has an EN and a PT version.
 const i18nText = (label: string, multiline = false) =>
@@ -10,8 +11,9 @@ const i18nText = (label: string, multiline = false) =>
     { label },
   );
 
+// Photos are resized/compressed in the browser before saving (max 2400px, WebP).
 const image = (label: string) =>
-  fields.image({
+  compressedImage({
     label,
     directory: 'src/assets/projects',
     publicPath: '../../assets/projects/',
