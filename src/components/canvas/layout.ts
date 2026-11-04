@@ -26,7 +26,7 @@ export interface Placed { x: number; y: number; w: number; h: number }
 export interface Tile extends Placed { z: number }
 
 const MARGIN = 80; // whitespace between tiles and the field border
-const DENSITY = 2.6; // field area / total tile area (overlap allowed, so a bit denser)
+const DENSITY = 2.1; // field area / total tile area (overlap allowed, so a bit denser)
 const RATIO = 1.55; // field width / height
 const OVERLAP = 0.28; // tiles may overlap up to this share of the smaller tile's side
 
@@ -42,23 +42,27 @@ const sdist = (a: Placed, b: Placed) => {
 function pickWidth(r: () => number, ratio: number) {
   const u = r();
   const w = u < 0.08 ? 460 + r() * 220 : u < 0.3 ? 280 + r() * 160 : 110 + r() * 170;
-  return Math.round(ratio > 1.4 ? w * 0.75 : w); // tall images a bit narrower
+  return ratio > 1.4 ? w * 0.75 : w; // tall images a bit narrower
 }
 
+/** Order (0..100, 50 = normal) -> size factor: 0 => 2x, 50 => 1x, 100 => 0.5x. */
+const orderScale = (order = 50) => Math.pow(2, (50 - Math.min(100, Math.max(0, order))) / 50);
+
 /**
- * aspects = height/width per tile. Returns an organic scatter with very varied sizes where tiles may
- * partly overlap (best-candidate sampling on signed distance), plus a depth per tile.
+ * aspects = height/width per tile, orders = canvas size order per tile (lower = bigger).
+ * Spreads tiles evenly over the whole field (best-candidate sampling on tile centres = blue noise),
+ * allowing partial overlaps, and gives each tile a depth.
  */
-export function layoutScatter(aspects: number[], seed = 11) {
+export function layoutScatter(aspects: number[], orders: number[] = [], seed = 11) {
   const r = rng(seed);
-  const sizes = aspects.map((asp) => {
+  const sizes = aspects.map((asp, i) => {
     const ratio = Math.min(1.8, Math.max(0.55, asp || 1));
-    const w = pickWidth(r, ratio);
+    const w = Math.round(Math.min(900, pickWidth(r, ratio) * orderScale(orders[i])));
     return { w, h: Math.round(w * ratio) };
   });
   const area = sizes.reduce((s, z) => s + z.w * z.h, 0);
   let fieldArea = area * DENSITY;
-  // Big tiles first (they sit further back), small ones fill in on top.
+  // Big tiles first (they sit further back), small ones fill in around/on top.
   const order = sizes.map((_, i) => i).sort((a, b) => sizes[b].w * sizes[b].h - sizes[a].w * sizes[a].h);
 
   for (let attempt = 0; attempt < 12; attempt++, fieldArea *= 1.08) {
@@ -70,21 +74,19 @@ export function layoutScatter(aspects: number[], seed = 11) {
     order.forEach((i, rankBySize) => {
       if (!ok) return;
       const { w, h } = sizes[i];
-      // ~1/3 of tiles look for a partial overlap with a neighbour, the rest for a gap of 30-150px.
-      const wantOverlap = placed.length > 0 && r() < 0.35;
-      const target = wantOverlap ? -OVERLAP * 0.6 * Math.min(w, h) : 30 + r() * 120;
       let best: Placed | null = null, bestScore = -Infinity;
-      for (let k = 0; k < 60; k++) {
+      for (let k = 0; k < 50; k++) {
         const c: Placed = { x: Math.round(MARGIN + r() * (W - 2 * MARGIN - w)), y: Math.round(MARGIN + r() * (H - 2 * MARGIN - h)), w, h };
+        const cx = c.x + w / 2, cy = c.y + h / 2;
         let nearest = Infinity, valid = true;
         for (const p of placed) {
-          const d = sdist(c, p);
-          if (d < -OVERLAP * Math.min(c.w, c.h, p.w, p.h)) { valid = false; break; } // too deep
+          if (sdist(c, p) < -OVERLAP * Math.min(c.w, c.h, p.w, p.h)) { valid = false; break; } // too deep
+          // Distance between centres, minus half the sizes: favours empty areas -> even coverage.
+          const d = Math.hypot(cx - (p.x + p.w / 2), cy - (p.y + p.h / 2)) - (Math.max(w, h) + Math.max(p.w, p.h)) / 4;
           if (d < nearest) nearest = d;
         }
         if (!valid) continue;
-        const score = placed.length ? -Math.abs(nearest - target) : 0;
-        if (score > bestScore) { bestScore = score; best = c; }
+        if (nearest > bestScore) { bestScore = nearest; best = c; }
       }
       if (!best) { ok = false; return; }
       placed.push(best);

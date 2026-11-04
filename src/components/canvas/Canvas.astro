@@ -20,7 +20,7 @@ const motion = (k: number, z: number) => {
   const amp = 5 + z * 9;
   return `z-index:${Math.round(z * 100)};--z:${z};--ax:${((h(1) - 0.5) * 2 * amp).toFixed(1)}px;--ay:${((h(2) - 0.5) * 2 * amp).toFixed(1)}px;--dd:${(6 + h(3) * 6).toFixed(1)}s;--dl:-${(h(4) * 12).toFixed(1)}s`;
 };
-const { tiles, W, H } = layoutScatter(list.map((o) => o.m.src.height / o.m.src.width), 23);
+const { tiles, W, H } = layoutScatter(list.map((o) => o.m.src.height / o.m.src.width), list.map((o) => o.m.order), 23);
 
 // Large versions for the lightbox (the grid itself uses the small widths below).
 const full = await Promise.all(
@@ -95,6 +95,7 @@ const projectInfo = groups.map(({ p, media }) => ({
     <button type="button" data-zoom="out" aria-label={t('canvas.zoomOut')}>−</button>
     <span data-zoom-label>100%</span>
     <button type="button" data-zoom="in" aria-label={t('canvas.zoomIn')}>+</button>
+    <button type="button" data-zoom="100" class="fit one" aria-label={t('canvas.actual')} title={`${t('canvas.actual')} (1)`}>1:1</button>
     <button type="button" data-zoom="fit" class="fit" aria-label={t('canvas.fit')} title={`${t('canvas.fit')} (0)`}>
       <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2">
         <path d="M1 5V1h4M9 1h4v4M13 9v4H9M5 13H1V9" />
@@ -208,6 +209,7 @@ const projectInfo = groups.map(({ p, media }) => ({
     color: var(--ink); cursor: pointer; font: inherit; font-size: var(--fs-md); touch-action: manipulation;
   }
   .cv-zoom button.fit { border-left: 1px solid var(--hair); }
+  .cv-zoom button.one { width: auto; padding: 0 12px; font-size: var(--fs-xs); }
   .cv-zoom button:hover { background: var(--surface); }
   .cv-zoom button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
   .cv-zoom [data-zoom-label] { min-width: 48px; text-align: center; color: var(--muted); font-variant-numeric: tabular-nums; }

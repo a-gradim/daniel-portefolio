@@ -23,7 +23,7 @@ const projects = defineCollection({
       discipline: z.string().nullable().optional(),
       client: z.string().default(''),
       cover: image().nullable().optional(),
-      gallery: z.array(z.object({ image: image(), alt: z.string().default(''), seq: z.string().nullable().optional() })).default([]),
+      gallery: z.array(z.object({ image: image(), alt: z.string().default(''), seq: z.string().nullable().optional(), order: z.number().nullable().optional() })).default([]),
       videos: z
         .array(
           z.object({
@@ -32,6 +32,7 @@ const projects = defineCollection({
             vertical: z.boolean().default(false),
             poster: image().nullable().optional(),
             seq: z.string().nullable().optional(),
+            order: z.number().nullable().optional(),
           }),
         )
         .default([]),

@@ -198,6 +198,7 @@ export function initCanvas(root: HTMLElement): () => void {
     flyTo({ ...base, s: base.s * f }, 260);
   };
   const fitAll = () => flyTo(fitAllCam(), 800);
+  const zoomTo100 = () => { const base = tw?.c1 ?? { cx: center().x, cy: center().y, s: cam.s }; flyTo({ ...base, s: 1 }, 600); };
 
   const rel = (e: { clientX: number; clientY: number }) => {
     const r = view.getBoundingClientRect();
@@ -319,7 +320,7 @@ export function initCanvas(root: HTMLElement): () => void {
     on(btn, 'click', () => {
       touched();
       const z = btn.dataset.zoom;
-      if (z === 'fit') fitAll(); else zoomStep(z === 'in' ? 1.4 : 1 / 1.4);
+      if (z === 'fit') fitAll(); else if (z === '100') zoomTo100(); else zoomStep(z === 'in' ? 1.4 : 1 / 1.4);
     }),
   );
 
@@ -608,6 +609,7 @@ export function initCanvas(root: HTMLElement): () => void {
     } else if (e.key === '+' || e.key === '=') { touched(); zoomStep(1.4); }
     else if (e.key === '-' || e.key === '_') { touched(); zoomStep(1 / 1.4); }
     else if (e.key === '0') { touched(); fitAll(); }
+    else if (e.key === '1') { touched(); zoomTo100(); }
   });
 
   /* ---------- resize ---------- */
