@@ -1,3 +1,4 @@
+import { mountYT } from '../../lib/yt-player';
 // Finite scatter canvas. cam.x/y = world coords of the viewport's top-left; cam.s = scale.
 const MIN_ABS = 0.1, MAX = 2.5, TAP = 6, TAU = 350, HEAD = 64, RESIST = 0.3, PANEL_GAP = 32;
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
@@ -500,8 +501,10 @@ export function initCanvas(root: HTMLElement): () => void {
   let lbReturn: HTMLElement | null = null;
   const inertTargets = [view, panel, $('.cv-zoom')];
 
+  let ytStop: (() => void) | null = null;
   function renderLB() {
     if (!lb) return;
+    ytStop?.(); ytStop = null;
     const t = lb.pr.tiles[lb.idx];
     const a = t.a;
     lbStage.replaceChildren();
@@ -509,13 +512,12 @@ export function initCanvas(root: HTMLElement): () => void {
     if (t.kind === 'video' && yt) {
       const frame = document.createElement('div');
       frame.className = 'lb-frame' + (a.dataset.vertical ? ' is-vertical' : '');
-      const f = document.createElement('iframe');
-      f.src = `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0&playsinline=1`;
-      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-      f.allowFullscreen = true;
-      f.title = a.dataset.alt || a.dataset.title || '';
-      frame.append(f);
       lbStage.append(frame);
+      ytStop = mountYT(frame, yt, {
+        poster: a.dataset.full || t.img.currentSrc || t.img.src,
+        title: a.dataset.alt || a.dataset.title || '',
+        labels: JSON.parse(root.dataset.ytLabels || '{}'),
+      });
     } else {
       const img = document.createElement('img');
       img.sizes = '100vw';
@@ -542,6 +544,7 @@ export function initCanvas(root: HTMLElement): () => void {
     if (!lb) return;
     lb = null;
     lbEl.hidden = true;
+    ytStop?.(); ytStop = null;
     lbStage.replaceChildren();
     inertTargets.forEach((el) => el.removeAttribute('inert'));
     lbReturn?.focus({ preventScroll: true });
@@ -563,7 +566,10 @@ export function initCanvas(root: HTMLElement): () => void {
   });
   {
     let x0 = 0, y0 = 0, id = -1;
-    on(lbStage, 'pointerdown', (e: PointerEvent) => { id = e.pointerId; x0 = e.clientX; y0 = e.clientY; });
+    on(lbStage, 'pointerdown', (e: PointerEvent) => {
+      if ((e.target as HTMLElement).closest('.ytp-bar')) return void (id = -1); // scrubbing a video is not a swipe
+      id = e.pointerId; x0 = e.clientX; y0 = e.clientY;
+    });
     on(lbStage, 'pointerup', (e: PointerEvent) => {
       if (e.pointerId !== id) return;
       id = -1;

@@ -1,6 +1,6 @@
 ---
 import { Image, getImage } from 'astro:assets';
-import { localePath, useT, type Locale } from '../../i18n/ui';
+import { localePath, useT, ytLabels, type Locale } from '../../i18n/ui';
 import { md, mediaEdges, pick, projectMedia, youtubeId, type Project } from '../../lib/content';
 import { layoutScatter, shuffle } from './layout';
 
@@ -31,7 +31,7 @@ const projectInfo = groups.map(({ p, media }) => ({
   edges: mediaEdges(media),
 }));
 ---
-<div class="cv" data-canvas data-w={W} data-h={H}>
+<div class="cv" data-yt-labels={ytLabels(locale)} data-canvas data-w={W} data-h={H}>
   <div class="cv-view" role="region" aria-label={t('canvas.hint')}>
     <div class="cv-layer" style={`width:${W}px;height:${H}px`}>
       <svg class="cv-edges" width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true"></svg>
@@ -49,7 +49,7 @@ const projectInfo = groups.map(({ p, media }) => ({
               data-yt={youtubeId(o.m.youtube) ?? undefined} data-vertical={o.m.vertical ? '1' : undefined}>
               <Image src={o.m.src} alt={o.m.alt} width={640} widths={[160, 320, 640, 960]}
                 sizes={`${Math.round(tl.w * 0.4)}px`} loading="lazy" decoding="async" draggable="false" />
-              {o.m.kind === 'video' && <span class="badge" aria-hidden="true">▶</span>}
+              {o.m.kind === 'video' && <span class="badge" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z" fill="currentColor" /></svg></span>}
             </a>
             {o.m.seq && <span class="seq" aria-hidden="true">{o.m.seq}</span>}
           </div>
@@ -124,6 +124,7 @@ const projectInfo = groups.map(({ p, media }) => ({
   }
   .cv-edges :global(path.done) { transition: none; }
 
+  .badge svg { width: 42%; height: 42%; margin-left: 8%; }
   .tile { position: absolute; transition: opacity var(--dur) var(--ease); }
   .cv:not(.is-ready) .tile { opacity: 0; }
   .cv.has-sel .tile:not(.in-sel) { opacity: 0.12; }
@@ -143,8 +144,7 @@ const projectInfo = groups.map(({ p, media }) => ({
     --b: min(calc(36px * var(--inv)), 42cqw);
     position: absolute; left: 50%; top: 50%; translate: -50% -50%; pointer-events: none;
     width: var(--b); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
-    background: var(--ink); color: var(--bg); opacity: 0.92; font-size: calc(var(--b) * 0.42); line-height: 1;
-    padding-left: 0.08em;
+    background: var(--ink); color: var(--bg); opacity: 0.92; line-height: 1;
   }
   .seq {
     position: absolute; left: 0; bottom: 100%; pointer-events: none; z-index: 1; display: none;
@@ -271,7 +271,6 @@ const projectInfo = groups.map(({ p, media }) => ({
   .lb-stage :global(img) { max-width: 100%; max-height: 100%; min-height: 0; width: auto; height: auto; object-fit: contain; }
   .lb-stage :global(.lb-frame) { aspect-ratio: 16 / 9; width: min(100%, calc((100dvh - 136px) * 16 / 9)); background: var(--surface); }
   .lb-stage :global(.lb-frame.is-vertical) { aspect-ratio: 9 / 16; width: auto; height: 100%; max-width: 100%; }
-  .lb-stage :global(iframe) { width: 100%; height: 100%; border: 0; }
   .lb-btn {
     position: absolute; z-index: 1; width: 44px; height: 44px; display: grid; place-items: center; border: 0;
     background: none; color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer; touch-action: manipulation;

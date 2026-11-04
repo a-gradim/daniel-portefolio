@@ -36,6 +36,10 @@ export const ui = {
     'index.empty': 'No projects match these filters.',
     'index.filters': 'Filters',
     'project.play': 'Play video',
+    'video.pause': 'Pause',
+    'video.mute': 'Mute',
+    'video.unmute': 'Unmute',
+    'video.fullscreen': 'Fullscreen',
     'project.gallery': 'Gallery',
     'about.location': 'Location',
     'about.social': 'Elsewhere',
@@ -74,6 +78,10 @@ export const ui = {
     'index.empty': 'Nenhum projeto corresponde a estes filtros.',
     'index.filters': 'Filtros',
     'project.play': 'Reproduzir vídeo',
+    'video.pause': 'Pausa',
+    'video.mute': 'Sem som',
+    'video.unmute': 'Com som',
+    'video.fullscreen': 'Ecrã inteiro',
     'project.gallery': 'Galeria',
     'about.location': 'Localização',
     'about.social': 'Noutros sítios',
@@ -83,6 +91,10 @@ export const ui = {
 } as const;
 
 export type UIKey = keyof (typeof ui)['en'];
+
+/** Labels for the custom video player (src/lib/yt-player.ts), as a JSON data attribute. */
+export const ytLabels = (locale: Locale) =>
+  JSON.stringify({ play: ui[locale]['project.play'], pause: ui[locale]['video.pause'], mute: ui[locale]['video.mute'], unmute: ui[locale]['video.unmute'], fullscreen: ui[locale]['video.fullscreen'] });
 
 export const useT = (locale: Locale) => (key: UIKey) => ui[locale][key] ?? ui.en[key];
 

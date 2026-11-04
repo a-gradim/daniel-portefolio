@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import { getProjects, getSections, md, pick, projectImages, youtubeId } from '../lib/content';
-import { localePath, useT, type Locale } from '../i18n/ui';
+import { localePath, useT, ytLabels, type Locale } from '../i18n/ui';
 
 interface Props {
   locale: Locale;
@@ -89,7 +89,7 @@ const description = plain.split(/\n\s*\n/)[0]?.slice(0, 160) || [discipline, cli
     )}
 
     {videos.length > 0 && (
-      <section class="videos" aria-label={t('project.videos')}>
+      <section class="videos" aria-label={t('project.videos')} data-yt-labels={ytLabels(locale)}>
         {videos.map((v) => (
           <figure class:list={['video', { vertical: v.vertical }]}>
             <div class="yt">
@@ -211,17 +211,12 @@ const description = plain.split(/\n\s*\n/)[0]?.slice(0, 160) || [discipline, cli
   .vertical .yt {
     aspect-ratio: 9 / 16;
   }
-  .yt :global(img),
-  .yt :global(iframe) {
+  .yt :global(img) {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     border: 0;
-  }
-  .yt :global(iframe) {
-    position: absolute;
-    inset: 0;
   }
   .poster {
     position: absolute;
@@ -312,18 +307,17 @@ const description = plain.split(/\n\s*\n/)[0]?.slice(0, 160) || [discipline, cli
 </style>
 
 <script>
+  import { mountYT } from '../lib/yt-player';
+
   function initYT() {
     document.querySelectorAll<HTMLButtonElement>('button.poster[data-yt]').forEach((btn) => {
       if (btn.dataset.bound) return;
       btn.dataset.bound = '1';
       btn.addEventListener('click', () => {
-        const id = btn.dataset.yt!;
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
-        iframe.title = btn.dataset.title || 'Video';
-        iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-        iframe.allowFullscreen = true;
-        btn.replaceWith(iframe);
+        const host = btn.parentElement as HTMLElement;
+        const labels = JSON.parse(btn.closest<HTMLElement>('[data-yt-labels]')?.dataset.ytLabels || '{}');
+        const poster = btn.querySelector('img')?.currentSrc;
+        mountYT(host, btn.dataset.yt!, { poster, title: btn.dataset.title, labels });
       });
     });
   }
