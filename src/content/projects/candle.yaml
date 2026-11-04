@@ -4,7 +4,7 @@ year: 2026
 discipline:
   en: Photography
   pt: Fotografia
-cover: ../../assets/projects/candle/cover.jpg
+cover: ../../assets/projects/candle/cover.webp
 gallery:
   - image: ../../assets/projects/candle/1-P1510984.webp
   - image: ../../assets/projects/candle/2-P1510980.webp
