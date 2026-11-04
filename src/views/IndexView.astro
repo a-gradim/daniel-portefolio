@@ -13,7 +13,9 @@ const t = useT(locale);
 const [projects, sections] = await Promise.all([getProjects(), getSections()]);
 const sectionTitle = new Map(sections.map((s) => [s.id, s.data.title]));
 
-const rows = projects.map((p, i) => {
+// Default view: newest year first (projects without a year go last); ties keep the Order fields.
+const byYear = [...projects].sort((a, b) => (b.data.year ?? -1) - (a.data.year ?? -1));
+const rows = byYear.map((p, i) => {
   const imgs = projectImages(p);
   return {
     id: p.id,

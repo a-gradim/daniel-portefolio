@@ -10,7 +10,7 @@ const disciplines = defineCollection({
 
 const sections = defineCollection({
   loader: glob({ pattern: '*.yaml', base: './src/content/sections' }),
-  schema: z.object({ title: z.string(), order: z.number().default(0) }),
+  schema: z.object({ title: z.string(), order: z.number().default(50) }),
 });
 
 const projects = defineCollection({
@@ -38,7 +38,7 @@ const projects = defineCollection({
       credits: z.string().default(''),
       body: i18n,
       featured: z.boolean().default(true),
-      order: z.number().default(0),
+      order: z.number().default(50),
     }),
 });
 

@@ -48,7 +48,7 @@ export default config({
       columns: ['title', 'order'],
       schema: {
         title: fields.slug({ name: { label: 'Title' } }),
-        order: fields.integer({ label: 'Order', defaultValue: 0 }),
+        order: fields.integer({ label: 'Order', defaultValue: 50 }),
       },
     }),
     projects: collection({
@@ -85,7 +85,7 @@ export default config({
         credits: fields.text({ label: 'Credits (e.g. Concept · Photography · Editing)' }),
         body: i18nText('Case study text (Markdown: ### title, - list, **bold**)', true),
         featured: fields.checkbox({ label: 'Show on home canvas', defaultValue: true }),
-        order: fields.integer({ label: 'Order', defaultValue: 0 }),
+        order: fields.integer({ label: 'Order', defaultValue: 50 }),
       },
     }),
   },
