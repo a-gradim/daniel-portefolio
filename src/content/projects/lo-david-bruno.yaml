@@ -1,17 +1,18 @@
 title: BTS Lo Siento × David Bruno
 section: losiento
+year: 2024
 discipline:
   en: Photography / Video
   pt: Fotografia / Vídeo
 client: Lo Siento
 cover: ../../assets/projects/lo-david-bruno/cover.webp
 gallery:
-  - image: ../../assets/projects/lo-david-bruno/gallery/0/image.webp
-    seq: '2'
-  - image: ../../assets/projects/lo-david-bruno/gallery/1/image.webp
-    seq: '3'
   - image: ../../assets/projects/lo-david-bruno/gallery/2/image.webp
     seq: '4'
+  - image: ../../assets/projects/lo-david-bruno/gallery/1/image.webp
+    seq: '3'
+  - image: ../../assets/projects/lo-david-bruno/gallery/0/image.webp
+    seq: '2'
   - image: ../../assets/projects/lo-david-bruno/gallery/3/image.webp
     seq: '5'
   - image: ../../assets/projects/lo-david-bruno/gallery/4/image.webp
