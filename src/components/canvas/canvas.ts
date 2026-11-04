@@ -386,15 +386,15 @@ export function initCanvas(root: HTMLElement): () => void {
         : `M${ax} ${ay}C${ax} ${ay + dy * 0.55} ${bx} ${by - dy * 0.55} ${bx} ${by}`;
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', d);
-      path.setAttribute('pathLength', '1');
-      path.style.setProperty('--delay', (0.3 + ranks.indexOf(A.rank) * 0.2).toFixed(2) + 's');
+      path.style.setProperty('--delay', (0.2 + ranks.indexOf(A.rank) * 0.35).toFixed(2) + 's');
       paths.push(path);
     }
     edgesSvg.append(...paths);
+    for (const p of paths) p.style.setProperty('--len', String(Math.ceil(p.getTotalLength()) + 2));
     if (instant || reduce()) return paths.forEach((p) => p.classList.add('drawn', 'done'));
     void edgesSvg.getBoundingClientRect();
     paths.forEach((p) => p.classList.add('drawn'));
-    drawTimer = window.setTimeout(() => paths.forEach((p) => p.classList.add('done')), (0.3 + ranks.length * 0.2 + 0.9) * 1000);
+    drawTimer = window.setTimeout(() => paths.forEach((p) => p.classList.add('done')), (0.2 + ranks.length * 0.35 + 1.5) * 1000);
   }
 
   function fillPanel(pr: Proj, side: Side) {

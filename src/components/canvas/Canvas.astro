@@ -117,10 +117,11 @@ const projectInfo = groups.map(({ p, media }) => ({
   .cv.is-moving .cv-layer { will-change: transform; }
   .cv-edges { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
   .cv-edges :global(path) {
-    fill: none; stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke;
-    stroke-linecap: round; opacity: 0.85;
-    stroke-dasharray: 1; stroke-dashoffset: 1;
-    transition: stroke-dashoffset 0.7s cubic-bezier(0.45, 0, 0.2, 1) var(--delay, 0s);
+    /* Constant ~2px on screen at any zoom (--inv = 1/zoom); dashes in real length for a clean draw-on. */
+    fill: none; stroke: var(--ink); stroke-width: calc(2px * var(--inv));
+    stroke-linecap: round; stroke-linejoin: round; opacity: 0.9;
+    stroke-dasharray: var(--len, 1); stroke-dashoffset: var(--len, 1);
+    transition: stroke-dashoffset 1.4s cubic-bezier(0.65, 0, 0.35, 1) var(--delay, 0s);
   }
   .cv-edges :global(path.drawn) { stroke-dashoffset: 0; }
   .cv-edges :global(path.done) { stroke-dasharray: none; transition: none; }
@@ -153,7 +154,6 @@ const projectInfo = groups.map(({ p, media }) => ({
     font-family: var(--font-label); font-size: var(--fs-xs); letter-spacing: var(--tracking-label);
     text-transform: var(--case-label); line-height: 1.2; color: var(--ink); white-space: nowrap;
   }
-  .tile.in-sel .seq { display: block; }
 
   .cv-caption, .cv-hint, .cv-zoom {
     font-family: var(--font-label); font-size: var(--fs-xs); letter-spacing: var(--tracking-label);
