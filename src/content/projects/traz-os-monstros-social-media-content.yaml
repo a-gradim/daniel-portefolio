@@ -1,6 +1,7 @@
 title: Traz os Monstros —  Social Media Content
 section: traz
-discipline: photography
+disciplines:
+  - photography
 client: Traz os Monstros
 cover: >-
   ../../assets/projects/traz-os-monstros-social-media-content/02-traz-os-monstros-2.webp

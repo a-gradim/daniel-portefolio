@@ -1,7 +1,8 @@
 title: "SoaresBlend — Videos"
 section: soaresblend
 year: null
-discipline: promotional-video
+disciplines:
+  - promotional-video
 client: Brand content
 cover: ../../assets/projects/soaresblend-videos/kike-01.jpg
 gallery: []

@@ -6,7 +6,11 @@ type I18n = { en: string; pt: string };
 type RawProject = CollectionEntry<'projects'>;
 /** A project with its discipline resolved from the Disciplines collection to { en, pt }. */
 export type Project = Omit<RawProject, 'data'> & {
-  data: Omit<RawProject['data'], 'discipline'> & { discipline: I18n; disciplineId: string | null };
+  data: RawProject['data'] & {
+    /** All disciplines joined for display, e.g. { en: 'Photography / Video', pt: 'Fotografia / Vídeo' }. */
+    discipline: I18n;
+    disciplineList: (I18n & { id: string })[];
+  };
 };
 export type Section = CollectionEntry<'sections'>;
 
@@ -18,6 +22,14 @@ export async function getSections() {
   return (await getCollection('sections')).sort((a, b) => a.data.order - b.data.order);
 }
 
+function resolveDisciplines(ids: string[], all: Map<string, I18n>) {
+  const list = ids.flatMap((id) => { const d = all.get(id); return d ? [{ id, ...d }] : []; });
+  return {
+    disciplineList: list,
+    discipline: { en: list.map((d) => d.en).join(' / '), pt: list.map((d) => d.pt).join(' / ') },
+  };
+}
+
 /** Projects ordered by section order, then project order, then year desc. */
 export async function getProjects() {
   const sections = await getSections();
@@ -25,11 +37,7 @@ export async function getProjects() {
   const disciplines = new Map((await getCollection('disciplines')).map((d) => [d.id, { en: d.data.name, pt: d.data.pt || d.data.name }]));
   const projects: Project[] = (await getCollection('projects')).map((p) => ({
     ...p,
-    data: {
-      ...p.data,
-      disciplineId: p.data.discipline ?? null,
-      discipline: disciplines.get(p.data.discipline ?? '') ?? { en: '', pt: '' },
-    },
+    data: { ...p.data, ...resolveDisciplines(p.data.disciplines, disciplines) },
   }));
   return projects.sort(
     (a, b) =>

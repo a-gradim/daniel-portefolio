@@ -1,7 +1,9 @@
 title: "Traz os Monstros — Merch"
 section: traz
 year: null
-discipline: photography-film
+disciplines:
+  - photography
+  - film
 client: Traz os Monstros
 cover: ../../assets/projects/traz-merch/01-9-img-3674.webp
 gallery:

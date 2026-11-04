@@ -61,7 +61,7 @@ export default config({
         title: fields.slug({ name: { label: 'Title' } }),
         section: fields.relationship({ label: 'Section', collection: 'sections' }),
         year: fields.integer({ label: 'Year' }),
-        discipline: fields.relationship({ label: 'Discipline', collection: 'disciplines' }),
+        disciplines: fields.multiRelationship({ label: 'Disciplines', collection: 'disciplines' }),
         client: fields.text({ label: 'Client / note' }),
         cover: image('Cover image'),
         gallery: fields.array(

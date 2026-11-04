@@ -1,7 +1,8 @@
 title: Natural Forms
 section: selfmade
 year: null
-discipline: photography
+disciplines:
+  - photography
 client: Personal Work
 cover: ../../assets/projects/nature/01-1-p1480119.webp
 gallery:

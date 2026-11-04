@@ -1,6 +1,7 @@
 title: Unmade Collection
 section: losiento
-discipline: photography
+disciplines:
+  - photography
 client: Lo Siento
 cover: ../../assets/projects/lo-unmade/01-duarte-camisa.jpg
 gallery: []

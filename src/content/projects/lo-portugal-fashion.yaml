@@ -1,7 +1,8 @@
 title: Portugal Fashion Experience 2025 Backstage
 section: losiento
 year: 2025
-discipline: photography
+disciplines:
+  - photography
 client: Lo Siento
 cover: ../../assets/projects/lo-portugal-fashion/01-10-p1450758.webp
 gallery:

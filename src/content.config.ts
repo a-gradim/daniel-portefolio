@@ -20,7 +20,7 @@ const projects = defineCollection({
       title: z.string(),
       section: z.string().nullable().optional(),
       year: z.number().nullable().optional(),
-      discipline: z.string().nullable().optional(),
+      disciplines: z.array(z.string()).default([]),
       client: z.string().default(''),
       cover: image().nullable().optional(),
       gallery: z.array(z.object({ image: image(), alt: z.string().default(''), seq: z.string().nullable().optional(), order: z.number().nullable().optional() })).default([]),

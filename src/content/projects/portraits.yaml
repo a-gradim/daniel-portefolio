@@ -1,7 +1,8 @@
 title: Portrait Studies
 section: selfmade
 year: null
-discipline: photography
+disciplines:
+  - photography
 client: Personal Work
 cover: ../../assets/projects/portraits/1-p1380647.webp
 gallery:

@@ -23,13 +23,14 @@ const rows = byYear.map((p, i) => {
     title: p.data.title,
     client: p.data.client || sectionTitle.get(p.data.section ?? '') || '',
     discipline: pick(p.data.discipline, locale),
+    disciplineNames: p.data.disciplineList.map((x) => pick(x, locale)),
     year: p.data.year ?? null,
     image: imgs[0] ?? null,
     href: localePath(locale, `/work/${p.id}`),
   };
 });
 
-const disciplines = [...new Set(rows.map((r) => r.discipline).filter(Boolean))];
+const disciplines = [...new Set(rows.flatMap((r) => r.disciplineNames))].sort((a, b) => a.localeCompare(b));
 const years = [...new Set(rows.map((r) => r.year).filter((y): y is number => y != null))].sort((a, b) => b - a);
 
 const cols = [
@@ -78,7 +79,7 @@ const cols = [
         {rows.map((r) => (
           <li
             class="item"
-            data-discipline={r.discipline}
+            data-discipline={r.disciplineNames.join('|')}
             data-year={r.year ?? ''}
             data-i={r.i}
             data-title={r.title}
@@ -319,7 +320,7 @@ const cols = [
       let shown = 0;
       for (const li of items) {
         const ok =
-          (!state.discipline || li.dataset.discipline === state.discipline) &&
+          (!state.discipline || (li.dataset.discipline ?? '').split('|').includes(state.discipline)) &&
           (!state.year || li.dataset.year === state.year);
         li.hidden = !ok;
         if (ok) shown++;

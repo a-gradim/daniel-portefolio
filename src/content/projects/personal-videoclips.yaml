@@ -1,7 +1,8 @@
 title: Videoclips
 section: selfmade
 year: null
-discipline: music-videos
+disciplines:
+  - music-videos
 client: Personal Work
 cover: ../../assets/projects/personal-videoclips/yt-S3Ie4wZ-IKY.jpg
 gallery: []

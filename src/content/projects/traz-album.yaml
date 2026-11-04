@@ -1,7 +1,8 @@
 title: "Traz os Monstros — Album / Artwork"
 section: traz
 year: null
-discipline: artwork
+disciplines:
+  - artwork
 client: Traz os Monstros
 cover: ../../assets/projects/traz-album/01-capa-album.webp
 gallery:

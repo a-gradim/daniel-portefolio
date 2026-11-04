@@ -1,7 +1,9 @@
 title: "Lo Siento × Watered Marta"
 section: losiento
 year: null
-discipline: photography-video
+disciplines:
+  - photography
+  - video
 client: Lo Siento
 cover: ../../assets/projects/lo-watered-marta/15-2-dsc0240.webp
 gallery:
