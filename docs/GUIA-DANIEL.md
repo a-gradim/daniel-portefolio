@@ -107,3 +107,14 @@ Aqui as alterações são gravadas diretamente nos ficheiros do teu computador. 
 2. **Imagem não aparece:** confirma o formato (JPG ou WebP) e o tamanho (até 1,5 MB).
 3. **Site não atualiza:** espera 2 minutos e recarrega a página com `Ctrl+F5` (Windows) ou `Cmd+Shift+R` (Mac).
 4. **Continua igual:** envia ao Andre o nome do projeto e uma captura do erro.
+
+## Carregar muitas fotos de uma vez
+
+O admin (Keystatic) só aceita uma imagem de cada vez e muda o nome ao ficheiro. Para carregar várias de uma vez e manter os nomes (`1_nome.jpg`, `3a_nome.jpg`…):
+
+1. Cria primeiro o projeto no admin (com a capa) e grava.
+2. Abre https://github.com/a-gradim/daniel-portefolio/tree/main/src/assets/projects e entra na pasta do projeto (o nome é o slug do projeto).
+3. **Add file → Upload files**, arrasta todas as fotos e carrega em **Commit changes**.
+4. Em ~1 minuto as fotos aparecem no site, ordenadas pelo número no início do nome.
+
+Não precisas de as adicionar à galeria no admin. Só o fazes se quiseres escrever um texto alternativo ou mudar a posição de uma foto.
