@@ -12,6 +12,15 @@ interface Proj { id: string; tiles: Tile[]; edges: [number, number][]; tpl: HTML
 interface Cam { cx: number; cy: number; s: number }
 type Side = 'left' | 'right';
 
+/** Large lightbox versions derived from a tile's Vercel-optimized URL (keeps the HTML small). */
+function bigImage(img: HTMLImageElement) {
+  const src = img.currentSrc || img.src;
+  const u = new URL(src, location.href);
+  if (!u.pathname.startsWith('/_vercel/image')) return { src, srcset: '' };
+  const at = (w: number) => { u.searchParams.set('w', String(w)); u.searchParams.set('q', '80'); return u.pathname + u.search; };
+  return { src: at(1920), srcset: `${at(1280)} 1280w, ${at(1920)} 1920w` };
+}
+
 export function initCanvas(root: HTMLElement): () => void {
   const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
   const view = $('.cv-view'), layer = $('.cv-layer'), cap = $('.cv-caption');
@@ -515,15 +524,16 @@ export function initCanvas(root: HTMLElement): () => void {
       frame.className = 'lb-frame' + (a.dataset.vertical ? ' is-vertical' : '');
       lbStage.append(frame);
       ytStop = mountYT(frame, yt, {
-        poster: a.dataset.full || t.img.currentSrc || t.img.src,
+        poster: bigImage(t.img).src,
         title: a.dataset.alt || a.dataset.title || '',
         labels: JSON.parse(root.dataset.ytLabels || '{}'),
       });
     } else {
       const img = document.createElement('img');
       img.sizes = '100vw';
-      if (a.dataset.srcset) img.srcset = a.dataset.srcset;
-      img.src = a.dataset.full || t.img.currentSrc || t.img.src;
+      const big = bigImage(t.img);
+      if (big.srcset) img.srcset = big.srcset;
+      img.src = big.src;
       img.alt = a.dataset.alt || a.dataset.title || '';
       img.draggable = false;
       lbStage.append(img);

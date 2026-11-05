@@ -77,7 +77,7 @@ const description = plain.split(/\n\s*\n/)[0]?.slice(0, 160) || [discipline, cli
                 src={img.src}
                 alt={img.alt}
                 widths={[480, 800, 1200, 1800]}
-                sizes={landscape ? '(min-width: 1800px) 1736px, calc(100vw - 2 * var(--gutter))' : '(min-width: 768px) 50vw, 100vw'}
+                sizes={landscape ? '(min-width: 1800px) 1736px, calc(100vw - 64px)' : '(min-width: 768px) 50vw, 100vw'}
                 loading={i === 0 ? 'eager' : 'lazy'}
                 fetchpriority={i === 0 ? 'high' : 'auto'}
                 decoding="async"
