@@ -120,18 +120,20 @@ const nav = [
     color: var(--muted);
     transition: color var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
   }
+  /* Over the canvas the header inverts (mix-blend-mode: difference): links need full opacity to invert,
+     so the current page is marked with an underline instead of brightness. */
   body.full .site-header nav a {
     color: inherit;
-    opacity: 0.55;
+    opacity: 1;
   }
   .site-header nav a:hover,
   .site-header nav a[aria-current='page'] {
     color: var(--ink);
   }
-  body.full .site-header nav a:hover,
   body.full .site-header nav a[aria-current='page'] {
-    color: inherit;
-    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 0.35em;
+    text-decoration-thickness: 1px;
   }
   @media (min-width: 768px) {
     .site-header {
