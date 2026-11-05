@@ -55,7 +55,7 @@ const projectInfo = groups.map(({ p, media }) => ({
               data-title={o.p.data.title} data-discipline={disc} data-alt={o.m.alt}
               data-yt={youtubeId(o.m.youtube) ?? undefined} data-vertical={o.m.vertical ? '1' : undefined}>
               <Image quality={80} src={o.m.src} alt={o.m.alt} width={640} widths={[160, 320, 640, 960]}
-                sizes={`${Math.round(tl.w * 0.4)}px`} loading={inFirstView(tl) ? 'eager' : 'lazy'} fetchpriority={priority.has(k) ? 'high' : 'auto'} decoding="async" draggable="false" />
+                sizes={`${Math.round(tl.w * 0.25)}px`} loading={inFirstView(tl) ? 'eager' : 'lazy'} fetchpriority={priority.has(k) ? 'high' : 'auto'} decoding="async" draggable="false" />
               {o.m.kind === 'video' && <span class="badge" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z" fill="currentColor" /></svg></span>}
             </a>
             {o.m.seq && <span class="seq" aria-hidden="true">{o.m.seq}</span>}
@@ -122,7 +122,10 @@ const projectInfo = groups.map(({ p, media }) => ({
   }
   .cv.is-dragging .cv-view { cursor: grabbing; }
   .cv-layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; --inv: 1; }
-  .cv.is-moving .cv-layer { will-change: transform; }
+  @media (pointer: fine) { .cv.is-moving .cv-layer { will-change: transform; } }
+  /* Drift pauses while the camera moves; off on touch devices (one GPU layer per tile is too much memory on phones). */
+  .cv.is-moving .tile { animation-play-state: paused; }
+  @media (pointer: coarse) { .cv .tile { animation: none; translate: none; } }
   .cv-edges { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
   .cv-edges :global(path) {
     /* Constant ~2px on screen at any zoom (--inv = 1/zoom); dash length set in JS for the draw-on. */

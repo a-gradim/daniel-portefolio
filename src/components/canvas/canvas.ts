@@ -123,12 +123,16 @@ export function initCanvas(root: HTMLElement): () => void {
   }
 
   /** After the camera stops: let the browser re-raster and pick sharper srcset candidates. */
+  // Phones (3x screens) would otherwise decode ~190 large images at once and run out of memory:
+  // cap the effective pixel density used to pick srcset candidates.
+  const dprCap = matchMedia('(pointer: coarse)').matches ? Math.min(1, 1.5 / (devicePixelRatio || 1)) : 1;
+
   function settle() {
     root.classList.remove('is-moving');
     const x1 = cam.x + vw / cam.s, y1 = cam.y + vh / cam.s;
     for (const t of tiles) {
       if (t.x > x1 || t.x + t.w < cam.x || t.y > y1 || t.y + t.h < cam.y) continue;
-      const px = Math.ceil(t.w * cam.s);
+      const px = Math.max(16, Math.ceil(t.w * cam.s * dprCap));
       if (Math.abs(px - t.sz) > t.sz * 0.08) {
         t.sz = px;
         t.img.sizes = px + 'px';
