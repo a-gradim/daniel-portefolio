@@ -211,6 +211,7 @@ export function initCanvas(root: HTMLElement): () => void {
     flyTo({ ...base, s: base.s * f }, 260);
   };
   const fitAll = () => flyTo(fitAllCam(), 800);
+  const toggle100 = () => (Math.abs(cam.s - 1) < 0.02 ? fitAll() : zoomTo100());
   const zoomTo100 = () => { const base = tw?.c1 ?? { cx: center().x, cy: center().y, s: cam.s }; flyTo({ ...base, s: 1 }, 600); };
 
   const rel = (e: { clientX: number; clientY: number }) => {
@@ -312,6 +313,15 @@ export function initCanvas(root: HTMLElement): () => void {
     } else if (sel) deselect();
   });
 
+  /* Double-click on empty canvas: 100% around the pointer, or back to "fit all" when already at 100%. */
+  on(view, 'dblclick', (e: MouseEvent) => {
+    if ((e.target as HTMLElement).closest('.tile a')) return;
+    touched();
+    if (Math.abs(cam.s - 1) < 0.02) return fitAll();
+    const p = rel(e);
+    flyTo({ cx: cam.x + p.x / cam.s - (p.x - vw / 2), cy: cam.y + p.y / cam.s - (p.y - vh / 2), s: 1 }, 600);
+  });
+
   /* ---------- wheel / trackpad ---------- */
   on(view, 'wheel', (e: WheelEvent) => {
     e.preventDefault();
@@ -333,7 +343,7 @@ export function initCanvas(root: HTMLElement): () => void {
     on(btn, 'click', () => {
       touched();
       const z = btn.dataset.zoom;
-      if (z === 'fit') fitAll(); else if (z === '100') zoomTo100(); else zoomStep(z === 'in' ? 1.4 : 1 / 1.4);
+      if (z === 'fit') fitAll(); else if (z === 'toggle') toggle100(); else zoomStep(z === 'in' ? 1.4 : 1 / 1.4);
     }),
   );
 

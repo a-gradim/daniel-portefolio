@@ -94,9 +94,8 @@ const projectInfo = groups.map(({ p, media }) => ({
   </p>
   <div class="cv-zoom">
     <button type="button" data-zoom="out" aria-label={t('canvas.zoomOut')}>−</button>
-    <span data-zoom-label>100%</span>
+    <button type="button" data-zoom="toggle" data-zoom-label class="pct" aria-label={t('canvas.actual')} title={`${t('canvas.actual')} (1)`}>100%</button>
     <button type="button" data-zoom="in" aria-label={t('canvas.zoomIn')}>+</button>
-    <button type="button" data-zoom="100" class="fit one" aria-label={t('canvas.actual')} title={`${t('canvas.actual')} (1)`}>1:1</button>
     <button type="button" data-zoom="fit" class="fit" aria-label={t('canvas.fit')} title={`${t('canvas.fit')} (0)`}>
       <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2">
         <path d="M1 5V1h4M9 1h4v4M13 9v4H9M5 13H1V9" />
@@ -217,10 +216,11 @@ const projectInfo = groups.map(({ p, media }) => ({
     color: var(--ink); cursor: pointer; font: inherit; font-size: var(--fs-md); touch-action: manipulation;
   }
   .cv-zoom button.fit { border-left: 1px solid var(--hair); }
-  .cv-zoom button.one { width: auto; padding: 0 12px; font-size: var(--fs-xs); }
+  .cv-zoom button.pct { width: auto; padding: 0 6px; font-size: inherit; }
   .cv-zoom button:hover { background: var(--surface); }
   .cv-zoom button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-  .cv-zoom [data-zoom-label] { min-width: 48px; text-align: center; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .cv-zoom [data-zoom-label] { min-width: 52px; text-align: center; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .cv-zoom [data-zoom-label]:hover { color: var(--ink); }
 
   /* ---- case study panel (screen space; JS sets --px/--py every frame) ---- */
   .cv-panel {
