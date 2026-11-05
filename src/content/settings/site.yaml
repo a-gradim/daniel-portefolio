@@ -1,5 +1,5 @@
 defaultTheme: dark
-name: D
+name: 'Daniel Neto '
 role:
   en: Audiovisual creative — cinema, photography, creative direction
   pt: Criativo audiovisual — cinema, fotografia, direção criativa
@@ -44,4 +44,6 @@ skills:
   - Lighting
 location: Portugal
 email: danielnetogradim@gmail.com
-socials: []
+socials:
+  - label: Instagram
+    url: https://www.instagram.com/daiii__i/
