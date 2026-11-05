@@ -8,7 +8,11 @@ import keystatic from '@keystatic/astro';
 
 export default defineConfig({
   site: 'https://danielneto.vercel.app',
-  adapter: vercel({ imageService: false }),
+  adapter: vercel({
+    // Images are resized on demand by Vercel (cached), so deployments only carry the originals.
+    imageService: true,
+    imagesConfig: { sizes: [160, 320, 640, 960, 1280, 1920], domains: [], formats: ['image/avif', 'image/webp'] },
+  }),
   integrations: [
     react(),
     markdoc(),

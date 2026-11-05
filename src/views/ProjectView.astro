@@ -73,7 +73,7 @@ const description = plain.split(/\n\s*\n/)[0]?.slice(0, 160) || [discipline, cli
           const landscape = img.src.width / img.src.height >= 1.1;
           return (
             <figure class:list={['shot', { wide: landscape }]} style={`--ar:${img.src.width}/${img.src.height}`}>
-              <Image
+              <Image quality={80}
                 src={img.src}
                 alt={img.alt}
                 widths={[480, 800, 1200, 1800]}
@@ -101,7 +101,7 @@ const description = plain.split(/\n\s*\n/)[0]?.slice(0, 160) || [discipline, cli
               aria-label={`${t('project.play')}${v.title ? ': ' + v.title : ''}`}
             >
               {v.poster ? (
-                <Image src={v.poster} alt="" widths={[480, 800, 1200]} sizes={v.vertical ? '(min-width: 768px) 360px, 100vw' : '100vw'} loading="lazy" decoding="async" />
+                <Image quality={80} src={v.poster} alt="" widths={[480, 800, 1200]} sizes={v.vertical ? '(min-width: 768px) 360px, 100vw' : '100vw'} loading="lazy" decoding="async" />
               ) : (
                 <img src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`} alt="" loading="lazy" decoding="async" />
               )}

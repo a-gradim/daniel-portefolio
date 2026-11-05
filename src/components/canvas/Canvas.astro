@@ -24,7 +24,7 @@ const { tiles, W, H } = layoutScatter(list.map((o) => o.m.src.height / o.m.src.w
 
 // Large versions for the lightbox (the grid itself uses the small widths below).
 const full = await Promise.all(
-  list.map((o) => getImage({ src: o.m.src, width: 1920, widths: [1280, 1920], sizes: '100vw' })),
+  list.map((o) => getImage({ src: o.m.src, width: 1920, widths: [1280, 1920], sizes: '100vw', quality: 80 })),
 );
 
 const projectInfo = groups.map(({ p, media }) => ({
@@ -53,7 +53,7 @@ const projectInfo = groups.map(({ p, media }) => ({
               data-title={o.p.data.title} data-discipline={disc} data-alt={o.m.alt}
               data-full={full[k].src} data-srcset={full[k].srcSet.attribute}
               data-yt={youtubeId(o.m.youtube) ?? undefined} data-vertical={o.m.vertical ? '1' : undefined}>
-              <Image src={o.m.src} alt={o.m.alt} width={640} widths={[160, 320, 640, 960]}
+              <Image quality={80} src={o.m.src} alt={o.m.alt} width={640} widths={[160, 320, 640, 960]}
                 sizes={`${Math.round(tl.w * 0.4)}px`} loading="lazy" decoding="async" draggable="false" />
               {o.m.kind === 'video' && <span class="badge" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z" fill="currentColor" /></svg></span>}
             </a>
