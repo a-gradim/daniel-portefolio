@@ -17,8 +17,8 @@ const list = shuffle(flat, 17);
 // Idle drift per tile (CSS animation) + parallax depth (--z, used with the pointer in canvas.ts).
 const motion = (k: number, z: number) => {
   const h = (n: number) => ((Math.sin(k * 12.9898 + n * 78.233) * 43758.5453) % 1 + 1) % 1;
-  const amp = 5 + z * 9;
-  return `z-index:${Math.round(z * 100)};--z:${z};--ax:${((h(1) - 0.5) * 2 * amp).toFixed(1)}px;--ay:${((h(2) - 0.5) * 2 * amp).toFixed(1)}px;--dd:${(6 + h(3) * 6).toFixed(1)}s;--dl:-${(h(4) * 12).toFixed(1)}s`;
+  const amp = 12 + z * 18;
+  return `z-index:${Math.round(z * 100)};--z:${z};--ax:${((h(1) - 0.5) * 2 * amp).toFixed(1)}px;--ay:${((h(2) - 0.5) * 2 * amp).toFixed(1)}px;--dd:${(5 + h(3) * 4).toFixed(1)}s;--dl:-${(h(4) * 12).toFixed(1)}s`;
 };
 const { tiles, W, H } = layoutScatter(list.map((o) => o.m.src.height / o.m.src.width), list.map((o) => o.m.order), 23);
 
@@ -139,7 +139,7 @@ const projectInfo = groups.map(({ p, media }) => ({
   .tile {
     position: absolute; transition: opacity var(--dur) var(--ease);
     /* Parallax: front tiles (--z ~1) follow the pointer more. --mx/--my are set on the layer by canvas.ts. */
-    translate: calc(var(--mx, 0) * var(--z, 0.5) * 28px) calc(var(--my, 0) * var(--z, 0.5) * 28px);
+    translate: calc(var(--mx, 0) * var(--z, 0.5) * 60px) calc(var(--my, 0) * var(--z, 0.5) * 60px);
     animation: cv-drift var(--dd, 9s) ease-in-out var(--dl, 0s) infinite alternate;
   }
   @keyframes cv-drift {
