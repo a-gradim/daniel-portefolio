@@ -1,6 +1,6 @@
 import { mountYT } from '../../lib/yt-player';
 // Finite scatter canvas. cam.x/y = world coords of the viewport's top-left; cam.s = scale.
-const MIN_ABS = 0.1, MAX = 2.5, TAP = 6, TAU = 350, HEAD = 64, RESIST = 0.3, PANEL_GAP = 32;
+const MIN_ABS = 0.14, MAX = 2.5, TAP = 6, TAU = 350, HEAD = 64, RESIST = 0.3, PANEL_GAP = 32;
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
 interface Tile {
@@ -74,7 +74,7 @@ export function initCanvas(root: HTMLElement): () => void {
   }
   const fitAllIns = () => ({ l: 16, r: 16, t: HEAD, b: 24 });
   const fitAllScale = () => Math.min((vw - 32) / W, (vh - HEAD - 24) / H);
-  const minScale = () => Math.min(MIN_ABS, fitAllScale() * 0.9);
+  const minScale = () => MIN_ABS; // zoom-out limit: 14%
   const fitAllCam = () => camFor({ x: 0, y: 0, w: W, h: H }, fitAllIns(), MAX);
   const rectAt = (t: Tile, c: Cam) => {
     const x0 = c.cx - vw / (2 * c.s), y0 = c.cy - vh / (2 * c.s);

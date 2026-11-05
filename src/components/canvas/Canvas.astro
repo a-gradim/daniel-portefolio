@@ -15,10 +15,10 @@ const groups = featured.map((p) => ({ p, media: projectMedia(p) }));
 const flat = groups.flatMap(({ p, media }) => media.map((m, i) => ({ p, m, i })));
 const list = shuffle(flat, 17);
 // Idle drift per tile (CSS animation) + parallax depth (--z, used with the pointer in canvas.ts).
-const motion = (k: number, z: number) => {
+const motion = (k: number, z: number, r: number) => {
   const h = (n: number) => ((Math.sin(k * 12.9898 + n * 78.233) * 43758.5453) % 1 + 1) % 1;
   const amp = 5 + z * 9;
-  return `z-index:${Math.round(z * 100)};--z:${z};--ax:${((h(1) - 0.5) * 2 * amp).toFixed(1)}px;--ay:${((h(2) - 0.5) * 2 * amp).toFixed(1)}px;--dd:${(6 + h(3) * 6).toFixed(1)}s;--dl:-${(h(4) * 12).toFixed(1)}s`;
+  return `--r:${r}px;z-index:${Math.round(z * 100)};--z:${z};--ax:${((h(1) - 0.5) * 2 * amp).toFixed(1)}px;--ay:${((h(2) - 0.5) * 2 * amp).toFixed(1)}px;--dd:${(6 + h(3) * 6).toFixed(1)}s;--dl:-${(h(4) * 12).toFixed(1)}s`;
 };
 const { tiles, W, H } = layoutScatter(list.map((o) => o.m.src.height / o.m.src.width), list.map((o) => o.m.order), 23);
 
@@ -50,7 +50,7 @@ const projectInfo = groups.map(({ p, media }) => ({
         return (
           <div class="tile" data-p={o.p.id} data-i={o.i} data-rank={o.m.rank} data-kind={o.m.kind}
             data-x={tl.x} data-y={tl.y} data-w={tl.w} data-h={tl.h}
-            style={`left:${tl.x}px;top:${tl.y}px;width:${tl.w}px;height:${tl.h}px;${motion(k, tl.z)}`}>
+            style={`left:${tl.x}px;top:${tl.y}px;width:${tl.w}px;height:${tl.h}px;${motion(k, tl.z, Math.round(Math.min(tl.w, tl.h) * 0.12))}`}>
             <a href={localePath(locale, '/work/' + o.p.id)} draggable="false" aria-label={label}
               data-title={o.p.data.title} data-discipline={disc} data-alt={o.m.alt}
               data-yt={youtubeId(o.m.youtube) ?? undefined} data-vertical={o.m.vertical ? '1' : undefined}>
@@ -149,6 +149,8 @@ const projectInfo = groups.map(({ p, media }) => ({
   .cv:not(.is-ready) .tile { opacity: 0; }
   .cv.has-sel .tile:not(.in-sel) { opacity: 0.12; }
   .tile a { position: relative; container-type: inline-size; display: block; width: 100%; height: 100%; background: var(--surface); cursor: inherit; -webkit-user-drag: none; }
+  /* iPhone-like rounded corners (~12% of the short side; continuous "squircle" curve where supported). */
+  .tile a { border-radius: var(--r, 12px); overflow: hidden; corner-shape: squircle; }
   .tile :global(img) {
     display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none;
     -webkit-user-drag: none; transition: opacity var(--dur) var(--ease);
