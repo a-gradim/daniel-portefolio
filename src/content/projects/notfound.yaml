@@ -3,7 +3,10 @@ section: notfound
 year: 2024
 disciplines:
   - photography
-client: Collaboration
+  - art-direction
+  - brand-content
+  - visuals
+client: NOT FOUND
 cover: ../../assets/projects/notfound/01-1-p1370766.webp
 gallery:
   - image: ../../assets/projects/notfound/02-2-p1370725.webp
@@ -21,7 +24,9 @@ gallery:
   - image: ../../assets/projects/notfound/08-8-p1370657.webp
     seq: '8'
 videos: []
-credits: Collaborative Concept · Photography · Editing · Creative Direction
+credits: >-
+  Experimental Photography · Image Manipulation · Composition · Post-production
+  · Art Direction · Lighting
 body:
   en: >-
     A collaborative visual project developed with NotFound.
