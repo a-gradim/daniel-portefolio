@@ -1,4 +1,4 @@
-title: Lo Siento × Watered Marta
+title: LOSIENTO × Watered Marta
 section: losiento
 year: 2024
 disciplines:
@@ -6,41 +6,43 @@ disciplines:
   - video
   - brand-content
   - promotional-video
-client: Lo Siento
-cover: ../../assets/projects/lo-watered-marta/15-2-dsc0240.webp
+  - cinema-and-video
+  - art-direction
+client: LOSIENTO
+cover: ../../assets/projects/losiento-watered-marta/15-2-dsc0240.webp
 gallery:
-  - image: ../../assets/projects/lo-watered-marta/16-5-dsc0230.webp
+  - image: ../../assets/projects/losiento-watered-marta/16-5-dsc0230.webp
     seq: '2'
-  - image: ../../assets/projects/lo-watered-marta/17-10-dsc0199.webp
+  - image: ../../assets/projects/losiento-watered-marta/17-10-dsc0199.webp
     seq: '3'
-  - image: ../../assets/projects/lo-watered-marta/18-11-dsc0197.webp
+  - image: ../../assets/projects/losiento-watered-marta/18-11-dsc0197.webp
     seq: '4'
-  - image: ../../assets/projects/lo-watered-marta/19-12-dsc0192.webp
+  - image: ../../assets/projects/losiento-watered-marta/19-12-dsc0192.webp
     seq: '5'
-  - image: ../../assets/projects/lo-watered-marta/20-13-dsc0190.webp
+  - image: ../../assets/projects/losiento-watered-marta/20-13-dsc0190.webp
     seq: '6'
-  - image: ../../assets/projects/lo-watered-marta/21-16-dsc0136.webp
+  - image: ../../assets/projects/losiento-watered-marta/21-16-dsc0136.webp
     seq: '7'
-  - image: ../../assets/projects/lo-watered-marta/22-17-dsc0079.webp
+  - image: ../../assets/projects/losiento-watered-marta/22-17-dsc0079.webp
     seq: '8'
-  - image: ../../assets/projects/lo-watered-marta/23-18-dsc0074.webp
+  - image: ../../assets/projects/losiento-watered-marta/23-18-dsc0074.webp
     seq: '9'
-  - image: ../../assets/projects/lo-watered-marta/24-19-dsc0070.webp
+  - image: ../../assets/projects/losiento-watered-marta/24-19-dsc0070.webp
     seq: '10'
 videos:
   - youtube: https://youtube.com/shorts/gkaD7lNAc1A
     title: LOSIENTO x Watered Marta Promo Video 01
     vertical: true
     poster: >-
-      ../../assets/projects/lo-watered-marta/00-whatsapp-video-2026-03-10-at-6-14-56-pm.jpg
+      ../../assets/projects/losiento-watered-marta/00-whatsapp-video-2026-03-10-at-6-14-56-pm.jpg
     seq: '11'
   - youtube: https://youtube.com/shorts/Sey5ZvOMd4Q
     title: LOSIENTO x Watered Marta Promo Video 02
     vertical: true
     poster: >-
-      ../../assets/projects/lo-watered-marta/01-whatsapp-video-2026-03-10-at-6-16-28-pm.jpg
+      ../../assets/projects/losiento-watered-marta/01-whatsapp-video-2026-03-10-at-6-16-28-pm.jpg
     seq: '12'
-credits: Photography · Video · Editing
+credits: Photography · Video · Editing ·Art Direction
 body:
   en: >-
     A fashion-focused still and moving-image series created around the LOSIENTO
