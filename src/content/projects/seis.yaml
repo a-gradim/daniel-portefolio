@@ -1,42 +1,62 @@
 title: SEIS
 section: seis
-year: null
+year: 2025
 disciplines:
   - photography
+  - art-direction
 client: Product study
 cover: ../../assets/projects/seis/01-1-p1400330.webp
 gallery:
-  - seq: '2'
-    image: ../../assets/projects/seis/02-3-p1400313.webp
-    alt: ''
-  - seq: '3'
-    image: ../../assets/projects/seis/03-4-p1400274.webp
-    alt: ''
-  - seq: '4'
-    image: ../../assets/projects/seis/04-5-p1400253.webp
-    alt: ''
-  - seq: '5'
-    image: ../../assets/projects/seis/05-6-p1390542.webp
-    alt: ''
-  - seq: '6'
-    image: ../../assets/projects/seis/06-7-p1390517.webp
-    alt: ''
-  - seq: '7'
-    image: ../../assets/projects/seis/07-8-p1390515.webp
-    alt: ''
-  - seq: '8'
-    image: ../../assets/projects/seis/08-9-p1390368.webp
-    alt: ''
-  - seq: '9'
-    image: ../../assets/projects/seis/09-10-p1390360.webp
-    alt: ''
-  - seq: '10'
-    image: ../../assets/projects/seis/10-11-img-4456.webp
-    alt: ''
+  - image: ../../assets/projects/seis/02-3-p1400313.webp
+    seq: '2'
+  - image: ../../assets/projects/seis/03-4-p1400274.webp
+    seq: '3'
+  - image: ../../assets/projects/seis/04-5-p1400253.webp
+    seq: '4'
+  - image: ../../assets/projects/seis/05-6-p1390542.webp
+    seq: '5'
+  - image: ../../assets/projects/seis/06-7-p1390517.webp
+    seq: '6'
+  - image: ../../assets/projects/seis/07-8-p1390515.webp
+    seq: '7'
+  - image: ../../assets/projects/seis/08-9-p1390368.webp
+    seq: '8'
+  - image: ../../assets/projects/seis/09-10-p1390360.webp
+    seq: '9'
+  - image: ../../assets/projects/seis/10-11-img-4456.webp
+    seq: '10'
 videos: []
-credits: "Concept · Product Photography · Post-production"
+credits: >-
+  Concept · Product Photography · Image Editing· Lighting· Composition · Art
+  Direction
 body:
-  en: "Product photography developed for SEIS, with a visual approach built around presenting the pieces clearly while maintaining a strong and controlled image.\n\nComposition, lighting, background and framing were considered as part of the same visual system, allowing the product itself to remain the central element.\n\nI was responsible for the concept, photography and final retouching, producing a consistent set of images for the brand’s commercial communication."
-  pt: "Fotografia de produto desenvolvida para a SEIS, com uma abordagem visual construída em torno da apresentação clara das peças, mantendo uma imagem forte e controlada.\n\nA composição, a iluminação, o fundo e o enquadramento foram pensados como parte do mesmo sistema visual, permitindo que o próprio produto continue a ser o elemento central.\n\nFui responsável pelo conceito, pela fotografia e pelo retoque final, produzindo um conjunto coerente de imagens para a comunicação comercial da marca."
+  en: >-
+    Product photography developed for SEIS, with a visual approach built around
+    presenting the pieces clearly while maintaining a strong and controlled
+    image.
+
+
+    Composition, lighting, background and framing were considered as part of the
+    same visual system, allowing the product itself to remain the central
+    element.
+
+
+    I was responsible for the concept, photography and final retouching,
+    producing a consistent set of images for the brand’s commercial
+    communication.
+  pt: >-
+    Fotografia de produto desenvolvida para a SEIS, com uma abordagem visual
+    construída em torno da apresentação clara das peças, mantendo uma imagem
+    forte e controlada.
+
+
+    A composição, a iluminação, o fundo e o enquadramento foram pensados como
+    parte do mesmo sistema visual, permitindo que o próprio produto continue a
+    ser o elemento central.
+
+
+    Fui responsável pelo conceito, pela fotografia e pelo retoque final,
+    produzindo um conjunto coerente de imagens para a comunicação comercial da
+    marca.
 featured: true
 order: 50
