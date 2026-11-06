@@ -1,32 +1,34 @@
-title: BTS Lo Siento × David Bruno
+title: BTS LOSIENTO × David Bruno
 section: losiento
 year: 2024
 disciplines:
   - photography
   - video
   - brand-content
-client: Lo Siento
-cover: ../../assets/projects/lo-david-bruno/cover.webp
+  - art-direction
+  - cinema-and-video
+client: LOSIENTO
+cover: ../../assets/projects/bts-losiento-david-bruno/cover.webp
 gallery:
-  - image: ../../assets/projects/lo-david-bruno/gallery/2/image.webp
+  - image: ../../assets/projects/bts-losiento-david-bruno/gallery/2/image.webp
     seq: '4'
-  - image: ../../assets/projects/lo-david-bruno/gallery/1/image.webp
+  - image: ../../assets/projects/bts-losiento-david-bruno/gallery/1/image.webp
     seq: '3'
-  - image: ../../assets/projects/lo-david-bruno/gallery/0/image.webp
+  - image: ../../assets/projects/bts-losiento-david-bruno/gallery/0/image.webp
     seq: '2'
-  - image: ../../assets/projects/lo-david-bruno/gallery/3/image.webp
+  - image: ../../assets/projects/bts-losiento-david-bruno/gallery/3/image.webp
     seq: '5'
-  - image: ../../assets/projects/lo-david-bruno/gallery/4/image.webp
+  - image: ../../assets/projects/bts-losiento-david-bruno/gallery/4/image.webp
     seq: '6'
-  - image: ../../assets/projects/lo-david-bruno/gallery/5/image.webp
+  - image: ../../assets/projects/bts-losiento-david-bruno/gallery/5/image.webp
     seq: '7'
-  - image: ../../assets/projects/lo-david-bruno/gallery/6/image.webp
+  - image: ../../assets/projects/bts-losiento-david-bruno/gallery/6/image.webp
     seq: '8'
 videos:
   - youtube: https://youtu.be/uepAXQsdeqU
     title: david bruno vhs 1
     vertical: false
-    poster: ../../assets/projects/lo-david-bruno/videos/0/poster.jpg
+    poster: ../../assets/projects/bts-losiento-david-bruno/videos/0/poster.jpg
     seq: '9'
 credits: Concept · Photography · Video · Editing
 body:
