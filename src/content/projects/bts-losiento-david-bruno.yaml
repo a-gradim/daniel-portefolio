@@ -3,7 +3,6 @@ section: losiento
 year: 2024
 disciplines:
   - photography
-  - video
   - brand-content
   - art-direction
   - cinema-and-video
@@ -30,7 +29,9 @@ videos:
     vertical: false
     poster: ../../assets/projects/bts-losiento-david-bruno/videos/0/poster.jpg
     seq: '9'
-credits: Concept · Photography · Video · Editing
+credits: >-
+  Behind the Scenes · Photography · Videography · Video Editing · Documentary
+  Filmmaking
 body:
   en: >-
     Behind-the-scenes content created around the collaboration between LOSIENTO
