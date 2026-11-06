@@ -5,43 +5,60 @@ disciplines:
   - photography
   - brand-content
   - promotional-video
-client: Lo Siento
-cover: ../../assets/projects/lo-portugal-fashion/1-P1450435.webp
+client: LOSIENTO
+cover: >-
+  ../../assets/projects/portugal-fashion-experience-2025-backstage/1-P1450435.webp
 gallery:
-  - image: ../../assets/projects/lo-portugal-fashion/02-1-p1450435.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/02-1-p1450435.webp
     seq: '2'
-  - image: ../../assets/projects/lo-portugal-fashion/04-3-p1450473.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/04-3-p1450473.webp
     seq: '3'
-  - image: ../../assets/projects/lo-portugal-fashion/05-4-p1450682.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/05-4-p1450682.webp
     seq: '4'
-  - image: ../../assets/projects/lo-portugal-fashion/06-6-p1450729.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/06-6-p1450729.webp
     seq: '5'
-  - image: ../../assets/projects/lo-portugal-fashion/08-8-p1450743.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/08-8-p1450743.webp
     seq: '7'
-  - image: ../../assets/projects/lo-portugal-fashion/09-9-p1450753.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/09-9-p1450753.webp
     seq: '8'
-  - image: ../../assets/projects/lo-portugal-fashion/02-2-p1450728.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/02-2-p1450728.webp
     seq: '9'
-  - image: ../../assets/projects/lo-portugal-fashion/03-3-p1450711.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/03-3-p1450711.webp
     seq: '10'
-  - image: ../../assets/projects/lo-portugal-fashion/08-8-p1450506.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/08-8-p1450506.webp
     seq: '11'
-  - image: ../../assets/projects/lo-portugal-fashion/09-9-p1450489.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/09-9-p1450489.webp
     seq: '12'
-  - image: ../../assets/projects/lo-portugal-fashion/11-12-p1450436.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/11-12-p1450436.webp
     seq: '13'
-  - image: ../../assets/projects/lo-portugal-fashion/12-14-p1450306.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/12-14-p1450306.webp
     seq: '14'
-  - image: ../../assets/projects/lo-portugal-fashion/13-15-p1450301.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/13-15-p1450301.webp
     seq: '15'
-  - image: ../../assets/projects/lo-portugal-fashion/14-16-p1450296.webp
+  - image: >-
+      ../../assets/projects/portugal-fashion-experience-2025-backstage/14-16-p1450296.webp
     seq: '16'
 videos:
   - youtube: https://youtube.com/shorts/EbtHd90hV2g
     title: Backstage documentation for LOSIENTO Portugal Fashion Experience 2025
     vertical: true
     order: 50
-credits: Concept · Photography · Editing
+credits: >-
+  Event Photography · Fashion Photography · Videography · Video Editing ·
+  Documentary Filmmaking
 body:
   en: >-
     Backstage documentation created during Portugal Fashion Experience 2025,
