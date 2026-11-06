@@ -1,0 +1,50 @@
+title: Monochrome Portraits
+section: personal-work
+year: 2025
+disciplines:
+  - photography
+  - art-direction
+client: Personal Work
+cover: ../../assets/projects/monochrome-portraits/01-1-p1480458.webp
+gallery:
+  - image: ../../assets/projects/monochrome-portraits/02-2-p1480439.webp
+    seq: '2'
+  - image: ../../assets/projects/monochrome-portraits/03-3-p1480423.webp
+    seq: '3'
+  - image: ../../assets/projects/monochrome-portraits/04-4-p1480407.webp
+    seq: '4'
+  - image: ../../assets/projects/monochrome-portraits/05-5-p1480393.webp
+    seq: '5'
+  - image: ../../assets/projects/monochrome-portraits/06-6-p1480386.webp
+    seq: '6'
+videos: []
+credits: Art Direction · Photography · Image Editing· Lighting
+body:
+  en: >-
+    A portrait series built around a single subject and a consistent monochrome
+    treatment. Side light catches the face, hands and hair while the background
+    stays dark.
+
+
+    Changes in crop, gaze and gesture give each photograph a different emphasis.
+    The sequence moves between wider portraits and close views, keeping strong
+    shadow areas as part of the composition.
+
+
+    I developed the series and handled photography and image editing, working on
+    contrast and tonal separation across the final selection.
+  pt: >-
+    Uma série de retratos construída em torno de um único sujeito e de um
+    tratamento a preto e branco consistente. A luz lateral capta o rosto, as
+    mãos e o cabelo, enquanto o fundo se mantém escuro.
+
+
+    As variações de recorte, de olhar e de gesto dão a cada fotografia uma
+    ênfase diferente. A sequência alterna entre retratos mais amplos e planos
+    aproximados, mantendo as zonas de sombra marcadas como parte da composição.
+
+
+    Desenvolvi a série e assegurei a fotografia e a edição de imagem,
+    trabalhando o contraste e a separação tonal na seleção final.
+featured: true
+order: 50
