@@ -4,8 +4,9 @@ year: 2024
 disciplines:
   - photography
   - brand-content
-  - promotional-video
-client: Lo Siento
+  - cinema-and-video
+  - art-direction
+client: LOSIENTO
 cover: ../../assets/projects/losiento-unmade-collection/01-duarte-camisa.jpg
 gallery: []
 videos:
@@ -75,5 +76,5 @@ body:
     Trabalhei na conceção, na filmagem e na pós-produção, adaptando o ritmo, os
     efeitos e as transições de cada peça e mantendo uma linguagem visual
     coerente ao longo da campanha.
-featured: true
+featured: false
 order: 50
