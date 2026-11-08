@@ -1,48 +1,73 @@
-title: "Traz os Monstros — Merch"
+title: Traz os Monstros — Merch
 section: traz
-year: null
+year: 2026
 disciplines:
   - photography
-  - film
+  - brand-content
+  - art-direction
 client: Traz os Monstros
 cover: ../../assets/projects/traz-merch/01-9-img-3674.webp
 gallery:
-  - seq: '2'
-    image: ../../assets/projects/traz-merch/02-10-img-3682.webp
-    alt: ''
-  - seq: '3'
-    image: ../../assets/projects/traz-merch/03-18-img-3740.webp
-    alt: ''
-  - seq: '4'
-    image: ../../assets/projects/traz-merch/04-11-p1500533.webp
-    alt: ''
-  - seq: '5'
-    image: ../../assets/projects/traz-merch/05-12-p1500549.webp
-    alt: ''
-  - seq: '6'
-    image: ../../assets/projects/traz-merch/06-13-img-3714.webp
-    alt: ''
-  - seq: '7'
-    image: ../../assets/projects/traz-merch/07-14-img-3728.webp
-    alt: ''
-  - seq: '8'
-    image: ../../assets/projects/traz-merch/08-15-img-3731.webp
-    alt: ''
-  - seq: '9'
-    image: ../../assets/projects/traz-merch/09-16-img-3734.webp
-    alt: ''
-  - seq: '10'
-    image: ../../assets/projects/traz-merch/10-17-img-3736.webp
-    alt: ''
+  - image: ../../assets/projects/traz-merch/02-10-img-3682.webp
+    seq: '2'
+  - image: ../../assets/projects/traz-merch/03-18-img-3740.webp
+    seq: '3'
+  - image: ../../assets/projects/traz-merch/04-11-p1500533.webp
+    seq: '4'
+  - image: ../../assets/projects/traz-merch/05-12-p1500549.webp
+    seq: '5'
+  - image: ../../assets/projects/traz-merch/06-13-img-3714.webp
+    seq: '6'
+  - image: ../../assets/projects/traz-merch/07-14-img-3728.webp
+    seq: '7'
+  - image: ../../assets/projects/traz-merch/08-15-img-3731.webp
+    seq: '8'
+  - image: ../../assets/projects/traz-merch/09-16-img-3734.webp
+    seq: '9'
+  - image: ../../assets/projects/traz-merch/10-17-img-3736.webp
+    seq: '10'
 videos:
-  - seq: '11'
-    youtube: null
-    title: tome 01
+  - title: tome 01
     vertical: true
     poster: ../../assets/projects/traz-merch/tome-01.jpg
-credits: "Creative Concept · Photography · Editing"
+    seq: '11'
+credits: Creative Concept · Photography · Editing · Lighting · Product Photography
 body:
-  en: "For the launch of a new Traz os Monstros merchandise drop, I developed a visual approach designed to present the pieces without disconnecting them from the identity of the project.\n\nThe images balance product clarity with an editorial language, treating composition, light, framing and atmosphere as part of the same visual system.\n\nThe session was built to work across different contexts — from more descriptive catalogue images to photographs with a stronger visual presence for social media and the communication of the drop.\n\nI was responsible for the visual concept, photography and final image treatment, keeping consistency across the different pieces."
-  pt: "Para o lançamento de uma nova linha de merchandising dos Traz os Monstros, desenvolvi uma abordagem visual pensada para apresentar as peças sem as desligar da identidade do projeto.\n\nAs imagens equilibram a clareza do produto com uma linguagem editorial, tratando a composição, a luz, o enquadramento e a atmosfera como parte do mesmo sistema visual.\n\nA sessão foi construída para funcionar em diferentes contextos, desde imagens mais descritivas para catálogo até fotografias com maior presença visual para as redes sociais e para a comunicação do lançamento.\n\nFui responsável pelo conceito visual, pela fotografia e pelo tratamento final das imagens, garantindo consistência entre as diferentes peças."
+  en: >-
+    For the launch of a new Traz os Monstros merchandise drop, I developed a
+    visual approach designed to present the pieces without disconnecting them
+    from the identity of the project.
+
+
+    The images balance product clarity with an editorial language, treating
+    composition, light, framing and atmosphere as part of the same visual
+    system.
+
+
+    The session was built to work across different contexts — from more
+    descriptive catalogue images to photographs with a stronger visual presence
+    for social media and the communication of the drop.
+
+
+    I was responsible for the visual concept, photography and final image
+    treatment, keeping consistency across the different pieces.
+  pt: >-
+    Para o lançamento de uma nova linha de merchandising dos Traz os Monstros,
+    desenvolvi uma abordagem visual pensada para apresentar as peças sem as
+    desligar da identidade do projeto.
+
+
+    As imagens equilibram a clareza do produto com uma linguagem editorial,
+    tratando a composição, a luz, o enquadramento e a atmosfera como parte do
+    mesmo sistema visual.
+
+
+    A sessão foi construída para funcionar em diferentes contextos, desde
+    imagens mais descritivas para catálogo até fotografias com maior presença
+    visual para as redes sociais e para a comunicação do lançamento.
+
+
+    Fui responsável pelo conceito visual, pela fotografia e pelo tratamento
+    final das imagens, garantindo consistência entre as diferentes peças.
 featured: true
 order: 50
