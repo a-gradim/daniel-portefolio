@@ -1,55 +1,72 @@
-title: "Traz os Monstros — Videos"
+title: Traz os Monstros — Videos
 section: traz
-year: null
 disciplines:
-  - video
+  - art-direction
+  - brand-content
+  - cinema-and-video
 client: Traz os Monstros
 cover: ../../assets/projects/traz-videos/03-canvas-final.jpg
 gallery: []
 videos:
-  - seq: '1'
-    youtube: null
+  - youtube: >-
+      https://www.youtube.com/watch?v=BYKRxeM3460&list=RDBYKRxeM3460&start_radio=1
     title: canvas final
+    vertical: false
+    seq: '1'
+  - youtube: https://www.youtube.com/watch?v=4N7Kgo57_2A
+    title: 'visualizer '
     vertical: true
-    poster: ../../assets/projects/traz-videos/03-canvas-final.jpg
-  - seq: '2'
-    youtube: null
-    title: visualizer story
+    seq: '2'
+  - youtube: https://youtube.com/shorts/26FjtP37haM
+    title: ' 2026-10-06 at 19.27.05'
     vertical: true
-    poster: ../../assets/projects/traz-videos/07-visualizer-story.jpg
-  - seq: '3'
-    youtube: null
-    title: WhatsApp Video 2026-10-06 at 19.27.05
-    vertical: true
-    poster: ../../assets/projects/traz-videos/08-whatsapp-video-2026-10-06-at-19-27-05.jpg
-  - seq: '4'
-    youtube: null
-    title: bts pilates FINAL FINAL
-    vertical: true
-    poster: ../../assets/projects/traz-videos/06-bts-pilates-final-final.jpg
-  - seq: '5'
-    youtube: null
+    poster: >-
+      ../../assets/projects/traz-videos/08-whatsapp-video-2026-10-06-at-19-27-05.jpg
+    seq: '3'
+  - youtube: https://youtu.be/glSuqETFlfM
     title: tom uav reell1
     vertical: false
     poster: ../../assets/projects/traz-videos/01-tom-uav-reell1.jpg
-  - seq: '6'
-    youtube: null
-    title: "Juro que estamos a trabalhar num álbum...a sério! (2_3) #music #musica"
+    seq: '5'
+  - youtube: https://youtube.com/shorts/0TgXn-MnVCs
+    title: 'Juro que estamos a trabalhar num álbum...a sério! (2_3) #music #musica'
     vertical: true
-    poster: ../../assets/projects/traz-videos/02-juro-que-estamos-a-trabalhar-num-lbum-a-s-rio-2-3-music-musica.jpg
-  - seq: '7'
-    youtube: null
-    title: "Juro que estamos a trabalhar num álbum...a sério (3_3) #music #musica"
+    poster: >-
+      ../../assets/projects/traz-videos/02-juro-que-estamos-a-trabalhar-num-lbum-a-s-rio-2-3-music-musica.jpg
+    seq: '6'
+  - youtube: https://youtube.com/shorts/tJg3g3fztIo
+    title: 'Juro que estamos a trabalhar num álbum...a sério (3_3) #music #musica'
     vertical: true
-    poster: ../../assets/projects/traz-videos/04-juro-que-estamos-a-trabalhar-num-lbum-a-s-rio-3-3-music-musica.jpg
-  - seq: '8'
-    youtube: null
-    title: "juro que estamos a trabalhar num álbum...a sério! (1_1) #musica  #music"
+    poster: >-
+      ../../assets/projects/traz-videos/04-juro-que-estamos-a-trabalhar-num-lbum-a-s-rio-3-3-music-musica.jpg
+    seq: '7'
+  - youtube: https://youtube.com/shorts/mW638DcewRM
+    title: 'juro que estamos a trabalhar num álbum...a sério! (1_1) #musica  #music'
     vertical: true
-    poster: ../../assets/projects/traz-videos/05-juro-que-estamos-a-trabalhar-num-lbum-a-s-rio-1-1-musica-music.jpg
-credits: "Filming · Editing · Visual Development"
+    poster: >-
+      ../../assets/projects/traz-videos/05-juro-que-estamos-a-trabalhar-num-lbum-a-s-rio-1-1-musica-music.jpg
+    seq: '8'
+  - youtube: https://youtube.com/shorts/furZiedtgT0
+    title: 'behind scenes pilates '
+    vertical: true
+    order: 50
+credits: Filming · Editing · Visual Development
 body:
-  en: "A series of short-form videos created around Traz os Monstros for digital communication.\n\nThe work is driven by rhythm, performance and fast visual ideas, with editing used to keep each piece distinct while still belonging to the same broader visual world."
-  pt: "Uma série de vídeos de curta duração criados em torno dos Traz os Monstros para comunicação digital.\n\nO trabalho é guiado pelo ritmo, pela performance e por ideias visuais rápidas, com a montagem a manter cada peça distinta, sem deixar de pertencer ao mesmo universo visual."
+  en: >-
+    A series of short-form videos created around Traz os Monstros for digital
+    communication.
+
+
+    The work is driven by rhythm, performance and fast visual ideas, with
+    editing used to keep each piece distinct while still belonging to the same
+    broader visual world.
+  pt: >-
+    Uma série de vídeos de curta duração criados em torno dos Traz os Monstros
+    para comunicação digital.
+
+
+    O trabalho é guiado pelo ritmo, pela performance e por ideias visuais
+    rápidas, com a montagem a manter cada peça distinta, sem deixar de pertencer
+    ao mesmo universo visual.
 featured: true
 order: 50
