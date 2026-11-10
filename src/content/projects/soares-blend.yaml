@@ -1,0 +1,51 @@
+title: 'SoaresBlend '
+section: soaresblend
+year: 2026
+disciplines:
+  - brand-content
+  - cinema-and-video
+  - art-direction
+client: SoaresBlend
+gallery: []
+videos:
+  - youtube: https://youtube.com/shorts/50prvGBhK4Q
+    title: SoaresBlend 01
+    vertical: true
+    poster: ../../assets/projects/soares-blend/kike-01.jpg
+    seq: '1'
+  - youtube: https://youtube.com/shorts/BMfkByShdfI
+    title: SoaresBlend 02
+    vertical: true
+    order: 50
+credits: >-
+  Concept · Filming · Commercial Videography  · Video Editing · Colour Grading ·
+  Brand Storytelling
+body:
+  en: >-
+    A series of promotional videos developed for SoaresBlend, created to
+    translate the brand into short-form visual content.
+
+
+    Each piece was built around its own concept and narrative structure, with
+    attention to framing, movement, pacing and colour treatment throughout the
+    production and post-production process.
+
+
+    I was responsible for the concept, filming and editing, shaping each video
+    around the needs of the brand while keeping a consistent visual language
+    across the series.
+  pt: >-
+    Uma série de vídeos promocionais desenvolvidos para a SoaresBlend, criados
+    para traduzir a marca em conteúdo visual de curta duração.
+
+
+    Cada peça foi construída em torno do seu próprio conceito e estrutura
+    narrativa, com atenção ao enquadramento, ao movimento, ao ritmo e ao
+    tratamento de cor ao longo de todo o processo de produção e pós-produção.
+
+
+    Fiquei responsável pelo conceito, pela filmagem e pela montagem, moldando
+    cada vídeo em função das necessidades da marca e mantendo uma linguagem
+    visual consistente em toda a série.
+featured: true
+order: 50
